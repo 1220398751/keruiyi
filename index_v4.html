@@ -5,7 +5,7 @@
 <meta name="referrer" content="no-referrer">
 <meta name="gen" content="v4-20260907-204425">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>凡凡选股</title>
+<title>A股看板平台</title>
 <link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap">
 <style>
   :root{
@@ -424,6 +424,29 @@
   .lc-trade .label.add{color:var(--gold)}
   .lc-trade .label.sell{color:var(--green)}
   .lc-trade .val{color:var(--muted);flex:1}
+  /* ===== 龙头宝典 ===== */
+  .bd-mod{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:12px}
+  .bd-title{font-size:13px;font-weight:700;color:var(--gold);margin-bottom:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .bd-tag{font-size:9.5px;font-weight:600;padding:2px 6px;border-radius:3px;background:rgba(100,116,139,0.18);color:#94a3b8}
+  .bd-desc{font-size:10.5px;color:var(--muted);line-height:1.7;margin-bottom:8px}
+  .bd-card{background:var(--panel3);border:1px solid var(--border2);border-left:3px solid var(--gold);border-radius:8px;padding:8px 10px;margin-bottom:6px;font-size:11px;line-height:1.7}
+  .bd-card .bd-name{font-size:12.5px;font-weight:700;color:var(--fg)}
+  .bd-card .bd-code{color:var(--dim);font-family:'SF Mono',Monaco,Consolas,monospace;font-size:10.5px}
+  .bd-card .bd-buy{color:var(--red);font-weight:600}
+  .bd-card .bd-stop{color:var(--green);font-weight:600}
+  .bd-card .bd-sell{color:var(--gold)}
+  .bd-card .bd-tag2{display:inline-block;font-size:9px;font-weight:700;padding:1px 6px;border-radius:3px;margin-right:4px}
+  .bd-tag2.gold{background:rgba(240,166,60,0.15);color:var(--gold)}
+  .bd-tag2.red{background:rgba(248,113,113,0.15);color:#f87171}
+  .bd-tag2.green{background:rgba(74,222,128,0.15);color:#4ade80}
+  .bd-tag2.gray{background:rgba(100,116,139,0.18);color:#94a3b8}
+  .bd-ladder{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end}
+  .bd-ladder .lvl{flex:1 1 90px;min-width:80px;background:var(--panel3);border:1px solid var(--border2);border-radius:8px;padding:8px;text-align:center}
+  .bd-ladder .lvl .h{font-size:11px;font-weight:700;color:var(--gold)}
+  .bd-ladder .lvl .n{font-size:18px;font-weight:800;margin:2px 0}
+  .bd-ladder .lvl.gap{opacity:.45;border-style:dashed}
+  .bd-ladder .lvl.top{border-color:rgba(240,166,60,.5);background:rgba(240,166,60,.07)}
+  .bd-empty{color:var(--dim);font-size:11px;padding:12px 0}
 </style>
 </head>
 <body>
@@ -435,8 +458,8 @@
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>
     </div>
     <div>
-      <h1>凡凡选股</h1>
-      <div class="sub">凡凡选股 · A股短线数据参考工具 · 数据来自东方财富公开接口 · <b style="color:#ffd166">v4</b></div>
+      <h1>A股看板平台</h1>
+      <div class="sub">A股看板平台 · 短线数据参考工具 · 数据来自东方财富公开接口 · <b style="color:#ffd166">V5版</b></div>
     </div>
   </div>
   <div class="top-controls">
@@ -530,9 +553,7 @@
           <div class="fname">竞价委卖 &gt; 委买<span class="fnote">需 Level-2 挂单数据，公开接口不可得</span></div>
           <label class="switch"><input type="checkbox" id="fAucSell"><span class="track"></span><span class="knob"></span></label>
         </div>
-        <div class="auction-note" id="auctionNote">
-          公开免费接口不提供批量竞价挂单数据。<b>估算模式</b>：逐股拉取分时，真实计算 9:25 开盘涨幅；竞价换手率与委买委卖在无数据源时跳过。<b>演示模式</b>：生成带标记的示例数据，用于演示完整筛选流程。
-        </div>
+        <div class="auction-note" id="auctionNote" style="display:none"></div>
       </div>
 
     </div>
@@ -590,14 +611,14 @@
         <button class="tab" data-view="review">AI复盘<span class="cnt" id="cntReview">0</span><em class="tag-new">新</em></button>
         <button class="tab" data-view="value">中长线配置<span class="cnt" id="cntValue">0</span><em class="tag-new">新</em></button>
         <button class="tab" data-view="auction">竞价狙击台<span class="cnt" id="cntAuction">0</span><em class="tag-new">新</em></button>
+        <button class="tab" data-view="antiq">反量化策略<span class="cnt" id="cntAntiq">0</span><em class="tag-new">新</em></button>
+        <button class="tab" data-view="tailsnipe">尾盘低吸战法<span class="cnt" id="cntTailsnipe">0</span><em class="tag-new">新</em></button>
+        <button class="tab" data-view="baodian">龙头宝典<span class="cnt" id="cntBaodian">0</span><em class="tag-new">新</em></button>
+        <button class="tab" data-view="aiengine">AI自进化<span class="cnt" id="cntAiEngine">0</span><em class="tag-new">新</em></button>
       </div>
 
       <!-- 妖股候选 -->
       <div class="view on" id="view-cand">
-        <div class="hint">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-          妖股概率 = 连板高度 · 封板强度 · 活跃度 · 市值 · 龙虎榜资金 · 板块热度 六维评分（满分 100），点击卡片查看评分分解。
-        </div>
         <div class="cand-grid" id="candGrid"></div>
         <div class="empty" id="candEmpty" style="display:none">
           <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35M11 8v6M8 11h6"/></svg>
@@ -635,7 +656,6 @@
       <div class="view" id="view-ladder">
         <div class="legend">
           <span style="color:var(--red)">■</span> 涨停收盘
-          <span style="color:var(--muted)">封板资金 / 流通市值 = 封单强度</span>
           <span>点击卡片查看妖股评分</span>
         </div>
         <div class="ladder" id="ladderBox" style="margin-top:12px"></div>
@@ -646,9 +666,12 @@
 
       <!-- 板块透视 -->
       <div class="view" id="view-sector">
-        <div class="hint">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-          板块资金流向 = 当日涨停池 + 龙虎榜大资金按板块聚合（口径见页脚）；快讯来自东方财富 7×24，利好/利空为关键词规则判断，仅供参考。点击板块行查看相关快讯。
+        <div class="sector-fund-top" id="sectorFundTop" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+          <div style="flex:1 1 100%;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:10px 12px">
+            <div style="font-size:11px;color:var(--gold);font-weight:700;margin-bottom:6px">💰 全局板块资金引擎 · 最强主线 / 资金回流（东财主力净流入实时）</div>
+            <div id="sectorFundTopList" style="display:flex;gap:8px;flex-wrap:wrap;font-size:11px;color:var(--dim)">加载中…</div>
+            <button class="btn" id="sectorFundRefresh" style="margin-top:6px;padding:3px 10px;font-size:11px">刷新板块资金</button>
+          </div>
         </div>
         <div class="sector-layout">
           <div class="sector-table-wrap">
@@ -688,17 +711,13 @@
 
       <!-- 起爆前夜 -->
       <div class="view" id="view-boom">
-        <div class="hint">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-          起爆前夜 = 近期涨停基因（近15日涨停过）+ 今日温和整理（涨幅 -3%~3%）+ 均线粘合（默认&lt;2%，可放宽）+ 温和放量（量比 1.3~5.0）→ 蓄势待发候选。五项评分（满分100）+ 板块联动加权（最多 +20）。公开接口无法获取 Level-2 竞价明细，竞价异动锚点为 5 日均量估算，仅供参考。
-        </div>
         <div class="boom-params" style="display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:12px;margin-top:12px">
           <div class="fitem" style="margin:0">
             <div class="fname">流通市值 ≤</div>
             <input type="number" id="boomMcap" value="300" min="10" max="3000" step="10"><span class="unit">亿</span>
           </div>
           <div class="fitem" style="margin:0">
-            <div class="fname">最低评分<span class="fnote">总分 = 五项(100) + 板块(+20)</span></div>
+            <div class="fname">最低评分<span class="fnote">综合评分门槛</span></div>
             <input type="number" id="boomScore" value="70" min="0" max="120" step="5"><span class="unit">分</span>
           </div>
           <div class="fitem" style="margin:0">
@@ -767,10 +786,6 @@
 
       <!-- 情绪周期龙头战法 -->
       <div class="view" id="view-emotion">
-        <div class="hint">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-          情绪周期龙头战法 = 五阶段定位（冰点/启动/主升/高潮/退潮）+ 仓位建议 + 主线梯队真龙辨识 + 黄金买点（首次良性分歧）+ 补涨龙挖掘（时机锁定+三低一纯+分离确认）+ 退学买点（三模式）。基于《野人哥交易实战笔记》方法论，数据为公开接口实时计算，仅供参考。
-        </div>
         <div class="emo-run-bar">
           <div class="fitem" style="margin:0">
             <div class="fname">涨停基因窗口<span class="fnote">用于黄金买点/补涨扫描</span></div>
@@ -789,7 +804,7 @@
             </select>
           </div>
           <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);cursor:pointer">
-            <input type="checkbox" id="emoLowScan" checked> 启用补涨龙扫描（时机锁定+三低一纯+K线，较慢）
+            <input type="checkbox" id="emoLowScan" checked> 启用补涨龙扫描（较慢）
           </label>
           <button class="btn primary" id="emoRun">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
@@ -821,48 +836,36 @@
         </div>
 
         <!-- 模块3：主线梯队 -->
-        <div class="emo-section-title">③ 主线梯队结构（真龙辨识）</div>
+        <div class="emo-section-title">③ 主线梯队结构</div>
         <div id="emoLadder"></div>
 
         <!-- 模块4：黄金买点 -->
-        <div class="emo-section-title">④ 黄金买点监控（首次良性分歧）</div>
+        <div class="emo-section-title">④ 黄金买点监控</div>
         <div id="emoGolden"></div>
 
         <!-- 模块5：补涨龙挖掘 -->
-        <div class="emo-section-title">⑤ 补涨龙挖掘（时机锁定 · 三低一纯 · 分离确认）</div>
+        <div class="emo-section-title">⑤ 补涨龙挖掘</div>
 
         <!-- 时机指示器 -->
         <div class="low-timing-bar" id="lowTimingBar">
           <div class="timing-node" id="timingNode1">
             <div class="tn-head"><span class="tn-badge">节点一</span><span class="tn-name">龙头缩量加速期</span></div>
-            <div class="tn-desc">龙头连续缩量一字板（买不进），踏空资金急需宣泄口 → 板块内第一个换手二板</div>
             <div class="tn-status" id="timing1Status">等待检测…</div>
           </div>
           <div class="timing-connector"><div class="tc-line"></div><div class="tc-arrow">▶</div></div>
           <div class="timing-node" id="timingNode2">
             <div class="tn-head"><span class="tn-badge gold">节点二</span><span class="tn-name">龙头断板分歧日（黄金窗口）</span></div>
-            <div class="tn-desc">龙头爆量断板（未跌停）或尾盘漏单 → 板块内逆势拉起的首板/二板，阻力最小</div>
             <div class="tn-status" id="timing2Status">等待检测…</div>
           </div>
         </div>
         <div class="low-timing-result" id="lowTimingResult" style="display:none"></div>
 
-        <!-- 筛选条件标签 -->
-        <div class="low-filter-bar">
-          <span class="lf-tag"><b>低股价</b> &lt;10元</span>
-          <span class="lf-tag"><b>低市值</b> 30-80亿</span>
-          <span class="lf-tag"><b>低位</b> 60日涨幅&lt;30%</span>
-          <span class="lf-tag pure"><b>纯血统</b> 同龙头属性</span>
-          <span class="lf-tag confirm"><b>分离确认</b> 龙头跌它涨停</span>
-          <span class="lf-tag ma"><b>均线多头</b> 5&gt;10&gt;20</span>
-        </div>
-
         <!-- 候选股卡片 -->
         <div class="low-cards" id="lowCards"></div>
-        <div class="empty" id="emoLowEmpty" style="display:none">暂无补涨龙候选。需同时满足：主线板块 + 三低一纯 + 均线多头排列 + 放量。龙头断板日出现概率最高。</div>
+        <div class="empty" id="emoLowEmpty" style="display:none">暂无补涨龙候选，可切换交易日或稍后重试。</div>
 
         <!-- ⑥ 退学买点 -->
-        <div class="emo-section-title">⑥ 退学买点（三模式自动识别 · 预期买卖点）</div>
+        <div class="emo-section-title">⑥ 退学买点</div>
         <div class="emo-exit-layout" id="emoExitLayout">
           <!-- 买点一 -->
           <div class="emo-exit-card">
@@ -870,13 +873,6 @@
               <span class="emo-exit-name">买点一：首次大分歧低吸</span>
               <span class="emo-exit-tag core">最核心</span>
               <span class="emo-exit-stage">主升期</span>
-            </div>
-            <div class="emo-exit-rules">
-              <div><b>目标：</b>市场总空间龙（近N日≥4板，人气最旺）</div>
-              <div><b>信号：</b>爆量烂板/首阴/尾盘漏单（量比≥1.5）+ 板块无跌停负反馈</div>
-              <div><b>买点：</b>① 分歧日尾盘分时企稳拿底仓 ② 次日带量上攻翻红瞬间重仓追击</div>
-              <div><b>卖点：</b>持有至高潮期加速或第二次分歧离场</div>
-              <div><b>止损：</b>次日不反包 / 跌破5日线，无条件割肉</div>
             </div>
             <div class="emo-exit-stocks" id="exitStocks1"><div class="emo-exit-empty">点击「开始分析」扫描匹配标的</div></div>
           </div>
@@ -887,13 +883,6 @@
               <span class="emo-exit-tag violent">最暴力</span>
               <span class="emo-exit-stage">主升/高潮前期</span>
             </div>
-            <div class="emo-exit-rules">
-              <div><b>目标：</b>昨日分歧烂板/漏单的人气龙头</div>
-              <div><b>信号：</b>昨日弱（炸板/断板），今日竞价高开3%+（近似：涨幅>3%）+ 竞价量明显放大（量比≥2）</div>
-              <div><b>买点：</b>① 竞价挂单直接抢筹 ② 开盘5分钟内强势封板（扫板/排板）</div>
-              <div><b>卖点：</b>次日继续加速则锁仓，断板则清仓</div>
-              <div><b>止损：</b>炸板回落或次日低开低走，果断离场</div>
-            </div>
             <div class="emo-exit-stocks" id="exitStocks2"><div class="emo-exit-empty">点击「开始分析」扫描匹配标的</div></div>
           </div>
           <!-- 买点三 -->
@@ -903,52 +892,37 @@
               <span class="emo-exit-tag hard">最难</span>
               <span class="emo-exit-stage">退潮期尾声</span>
             </div>
-            <div class="emo-exit-rules">
-              <div><b>目标：</b>被核按钮按死的人气龙头（近N日有涨停，非纯粹杂毛）</div>
-              <div><b>信号：</b>封死跌停封单巨大 + 所属题材未彻底退潮（板块有活口涨停）</div>
-              <div><b>买点：</b>跌停撬开的瞬间（跟随大资金翘板）</div>
-              <div><b>卖点：</b>次日冲高就跑（快进快出，绝不恋战）</div>
-              <div><b>止损：</b>撬板失败继续跌停，次日必须纠错割肉</div>
-            </div>
             <div class="emo-exit-stocks" id="exitStocks3"><div class="emo-exit-empty">点击「开始分析」扫描匹配标的</div></div>
           </div>
-        </div>
-
-        <div class="emo-note">
-          <b>方法论说明：</b>情绪周期采用五维量化打分制（满分78分）：最高连板20分+涨停家数20分+炸板率15分+赚钱效应(昨日涨停今日溢价)15分+跌停/涨停比8分。得分0-15冰点/15-35启动/35-60主升/58+高潮；退潮期为动态判断（炸板率≥50%、溢价转负、高度断崖、晋级率&lt;15%、跌停≥15，满足2项以上且得分&lt;50即判退潮）。真龙需同时满足连板身位最高、率先打破压制、同板块高度联动；黄金买点为近N日涨停股今日出现分歧迹象且板块内无跌停负反馈；补涨龙挖掘自动锁定时机（龙头缩量加速/断板分歧黄金窗口），用三低一纯筛选，检测分离确认，给出买卖仓位建议；退学买点三模式自动识别首次大分歧低吸/弱转强打板/核按钮翘板。所有信号为算法筛选，不构成投资建议。
         </div>
       </div>
 
       <!-- 一进二战法 -->
       <div class="view" id="view-yijiner">
-        <div class="hint">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-          一进二战法 = 五步流程：①宏观择时（情绪周期非启动/主升期空仓）→ ②中观选势（只在最强2个主线板块选股）→ ③微观筛选（孤狼战法：剔除一字板/炸板/大市值/高价，精选早盘封板+封单比高）→ ④临场狙击（次日竞价确权：换手≥5%、高开3-7%、只打板不半路）→ ⑤风控退出（单笔≤20%仓位、跌破均价线/亏5%止损、断板清仓）。基于昨日首板数据自动计算。
-        </div>
         <div class="boom-run-bar" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px">
           <button class="btn primary" id="yjeRun">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
             计算一进二候选
           </button>
-          <span style="font-size:11px;color:var(--dim)">基于昨日首板数据，自动筛选最强主线板块中的优质标的</span>
+          <span style="font-size:11px;color:var(--dim)">基于昨日首板数据自动计算</span>
         </div>
         <div style="font-size:11px;color:var(--dim);margin-bottom:12px" id="yjeStatus"></div>
 
         <!-- 第一步：宏观择时 -->
-        <div class="emo-section-title">① 宏观择时（定生死）</div>
+        <div class="emo-section-title">① 宏观择时</div>
         <div id="yjeTiming" class="empty">点击「计算一进二候选」开始分析</div>
 
         <!-- 第二步：中观选势 -->
-        <div class="emo-section-title" id="yjeSectorTitle" style="display:none">② 中观选势（找土壤）— 最强主线板块</div>
+        <div class="emo-section-title" id="yjeSectorTitle" style="display:none">② 中观选势 — 最强主线板块</div>
         <div id="yjeSectors" style="display:none;margin-bottom:12px"></div>
 
         <!-- 第三步：微观筛选 -->
-        <div class="emo-section-title" id="yjeCandTitle" style="display:none">③ 微观筛选（选武器）— 孤狼战法候选池</div>
+        <div class="emo-section-title" id="yjeCandTitle" style="display:none">③ 微观筛选 — 候选池</div>
         <div id="yjeCandidates" style="display:none"></div>
 
         <!-- 被剔除列表 -->
         <div id="yjeRejectedBox" style="display:none;margin-top:12px">
-          <div style="font-size:12px;color:var(--muted);margin-bottom:6px">被剔除的股票（前20）</div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:6px">未进入候选池的个股（前20，含评分与剔除原因）</div>
           <div id="yjeRejected" style="font-size:11px;line-height:1.8"></div>
         </div>
 
@@ -959,10 +933,6 @@
 
       <!-- AI复盘 -->
       <div class="view" id="view-review">
-        <div class="hint">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-          AI复盘 = 全市场策略复盘，8大模块深度分析：①宏观经济与政策面（货币政策/财政政策/监管动态/经济数据）②外围市场与全球流动性（美股科技股映射/美联储加息/汇率/原油黄金/地缘政治）③A股大盘与市场综述 ④主线板块深度拆解（板块逻辑/行业景气度/龙头辨识/梯队结构/持续性）⑤重点个股深度分析（基本面/走势/资金/题材/次日预期）⑥龙虎榜资金动向 ⑦明日预期与操作策略（大盘预判/情绪预判/板块机会/个股关注/仓位建议/风险预案）⑧中长线配置视角。支持任何OpenAI兼容格式的大模型API。
-        </div>
         <div class="boom-run-bar" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px">
           <div style="display:flex;gap:6px;align-items:center">
             <label style="font-size:11px;color:var(--muted)">API Key</label>
@@ -985,10 +955,6 @@
 
       <!-- 中长线配置（价值投资） -->
       <div class="view" id="view-value">
-        <div class="hint">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-          中长线配置 = 三层漏斗模型：①宏观定方向（5大赛道：AI科技/创新药/出海/内需消费/红利资产）→ ②中观定行业（景气度排行，结合涨停热度+AI分析）→ ③微观定个股（四维量化评分：估值30%+盈利质量30%+成长动能25%+财务安全15%）。从短线情绪博弈转向中长线基本面与产业趋势博弈。
-        </div>
         <div class="boom-run-bar" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px">
           <button class="btn primary" id="valRun">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
@@ -1014,6 +980,34 @@
         </div>
         <div id="valStocks" style="display:none"></div>
 
+        <!-- 趋势成长（中长线升级模块） -->
+        <div style="margin-top:18px;padding:14px;background:linear-gradient(180deg,rgba(139,92,246,0.08),rgba(0,0,0,0.2));border:1px solid rgba(139,92,246,0.25);border-radius:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px">
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="font-size:14px;font-weight:700;color:#a78bfa">📈 趋势成长（中长线升级）</span>
+              <span style="font-size:10px;padding:2px 6px;border-radius:3px;background:rgba(139,92,246,0.2);color:#a78bfa;font-weight:600">三层筛选 · 四维评分</span>
+            </div>
+            <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+              <button class="btn primary" id="trendRun" style="flex:0 0 auto;background:linear-gradient(135deg,#8b5cf6,#6d28d9)">筛选趋势成长标的</button>
+              <span style="font-size:11px;color:#a78bfa;cursor:pointer" id="trendExplain" title="点击查看三层筛选逻辑">筛选逻辑说明 ⓘ</span>
+            </div>
+          </div>
+          <div id="trendExplainBox" style="display:none;font-size:11px;color:#94a3b8;line-height:1.8;background:rgba(139,92,246,0.08);border:1px solid rgba(139,92,246,0.2);border-radius:8px;padding:10px 12px;margin-bottom:10px">
+            <b style="color:#a78bfa">三层筛选漏斗：</b><br>
+            ① 基本面：扣非净利润增速连续两季&gt;20%，PEG&lt;1.2，经营现金流/净利润&gt;80%<br>
+            ② 趋势面：20/60/120日均线多头排列，股价离60日线乖离率≤15%，RPS&gt;80<br>
+            ③ 资金面：公募持股比例环比增加，股东户数减少，龙虎榜无量化席位对倒<br>
+            <b style="color:#a78bfa">买点提示：</b>不追高。缩量回踩20日或60日均线且分时企稳→「回踩低吸」；突破半年箱体→「突破确认」<br>
+            <b style="color:#a78bfa">风控提示：</b>板块成交额占比&gt;15%时页面顶部亮黄色预警「该板块极度拥挤，防范抱团瓦解」
+          </div>
+          <!-- 板块拥挤预警条 -->
+          <div id="trendCrowdWarn" style="display:none;background:rgba(250,173,20,0.12);border:1px solid rgba(250,173,20,0.4);border-radius:8px;padding:8px 12px;font-size:11px;color:#fbbf24;margin-bottom:10px;font-weight:600">
+            ⚠️ <span id="trendCrowdMsg"></span>
+          </div>
+          <div id="trendStatus" style="font-size:11px;color:#94a3b8;margin-bottom:8px">点击「筛选趋势成长标的」开始扫描（每日盘后更新一次）</div>
+          <div id="trendList"></div>
+        </div>
+
         <!-- AI行业景气分析结果 -->
         <div class="emo-section-title" id="valAiTitle" style="display:none">AI行业景气深度分析</div>
         <div id="valAiContent" style="display:none;font-size:12px;line-height:1.8"></div>
@@ -1021,10 +1015,6 @@
 
       <!-- 9:25 竞价狙击台 -->
       <div class="view" id="view-auction">
-        <div class="hint">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-          9:25竞价狙击台 = 自动获取昨日首板，按6维度评分（资金20+换手20+时间15+空间15+情绪20+逻辑10，满分100）筛选优质标的，9:25自动获取竞价数据计算量比，给出红绿灯信号和执行指令。退潮期情绪维度一票否决。
-        </div>
 
         <!-- 倒计时区域 -->
         <div style="background:linear-gradient(180deg,#1a1f2e,#0f1320);border:1px solid #2a3040;border-radius:10px;padding:14px;margin-bottom:12px;text-align:center">
@@ -1041,28 +1031,24 @@
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px">
           <button class="btn primary" id="auctionScan" style="flex:0 0 auto">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-            自动筛选首板
+            自动筛选
           </button>
           <button class="btn" id="auctionRefresh" style="flex:0 0 auto">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
             刷新竞价
           </button>
-          <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#94a3b8">
+          <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#94a3b8;flex-wrap:wrap">
+            <span>标的类型</span>
+            <select id="auctionType" style="padding:6px 8px;background:#131826;border:1px solid #2a3040;border-radius:4px;color:#e4e7ed;font-size:12px">
+              <option value="first">首板（一进二）</option>
+              <option value="high">高位接力（2-3板）</option>
+              <option value="trend">趋势中军</option>
+              <option value="all" selected>全部类型</option>
+            </select>
             <span>最低分</span>
             <input type="number" id="auctionMinScore" value="60" min="0" max="100" style="width:50px;padding:6px 8px;background:#131826;border:1px solid #2a3040;border-radius:4px;color:#e4e7ed;font-size:12px;text-align:center">
           </div>
           <span style="font-size:11px;color:#94a3b8;margin-left:auto" id="auctionUpdateTime">等待数据</span>
-        </div>
-
-        <!-- 评分维度说明 -->
-        <div style="background:rgba(245,197,66,0.05);border:1px solid rgba(245,197,66,0.2);border-radius:8px;padding:10px 12px;margin-bottom:12px;font-size:11px;color:#94a3b8;line-height:1.8">
-          <b style="color:#f5c542">6维度评分（满分100）：</b>
-          资金20分（封单比>1%+龙虎榜净买+竞价爆量）|
-          换手20分（首板10-20%最佳）|
-          时间15分（10:30前封板满分，尾盘板0分）|
-          空间15分（低位突破+身位靠前）|
-          情绪20分（启动/主升期满分，退潮期一票否决）|
-          逻辑10分（硬逻辑+板块梯队完整）
         </div>
 
         <!-- 候选股列表 -->
@@ -1073,12 +1059,11 @@
           <div style="font-size:48px;margin-bottom:16px">🎯</div>
           <div style="font-size:16px;font-weight:600;color:#e4e7ed;margin-bottom:8px">竞价狙击台</div>
           <div style="font-size:12px;color:#94a3b8;margin-bottom:20px;line-height:1.6">
-            自动筛选昨日首板，按6维度评分排序<br>
-            9:25-9:30自动获取竞价数据，给出红绿灯信号
+            自动筛选昨日首板/高位板/趋势中军，9:25-9:30自动获取竞价数据，按标的类型给出差异化红绿灯信号
           </div>
           <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
             <button onclick="scanYesterdayFirstBoards()" style="padding:12px 24px;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;box-shadow:0 4px 12px rgba(245,158,11,0.3)">
-              🚀 自动筛选昨日首板
+              🚀 自动筛选昨日候选
             </button>
             <button onclick="loadAuctionDemo()" style="padding:12px 24px;background:#1e2536;color:#94a3b8;border:1px solid #2a3040;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer">
               📋 查看演示数据
@@ -1088,6 +1073,235 @@
             💡 使用说明：早上9:20打开页面 → 点"自动筛选首板" → 9:25自动刷新竞价数据<br>
             9:30后数据自动锁定，重新打开页面也能查看当日竞价数据
           </div>
+        </div>
+      </div>
+
+      <!-- 反量化策略 -->
+      <div class="view" id="view-antiq">
+
+        <!-- 量化情绪监测条 -->
+        <div style="background:linear-gradient(180deg,#1a1f2e,#0f1320);border:1px solid #2a3040;border-radius:10px;padding:14px;margin-bottom:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px">
+            <span style="font-size:14px;font-weight:700;color:#f5c542">🧭 量化情绪监测</span>
+            <span id="antiqQtyStatus" style="font-size:11px;padding:3px 8px;border-radius:4px;font-weight:600;background:rgba(100,116,139,0.2);color:#94a3b8">待扫描</span>
+          </div>
+          <div style="font-size:11px;color:#94a3b8;margin-bottom:10px" id="antiqQtyDesc">点击下方"运行反量化扫描"分析全市场量化主导程度，判断今日是否适合追高。</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <div style="flex:1 1 45%;background:rgba(0,0,0,0.2);border-radius:8px;padding:10px 12px;min-width:140px">
+              <div style="font-size:10px;color:#64748b;margin-bottom:4px">中小盘量化占比</div>
+              <div id="antiqQtyPct" style="font-size:20px;font-weight:800;color:#94a3b8;font-family:'SF Mono',Monaco,Consolas,monospace">—</div>
+            </div>
+            <div style="flex:1 1 45%;background:rgba(0,0,0,0.2);border-radius:8px;padding:10px 12px;min-width:140px">
+              <div style="font-size:10px;color:#64748b;margin-bottom:4px">仓位建议</div>
+              <div id="antiqQtyPos" style="font-size:20px;font-weight:800;color:#94a3b8;font-family:'SF Mono',Monaco,Consolas,monospace">—</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 操作栏 -->
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px">
+          <button class="btn primary" id="antiqRun" style="flex:0 0 auto">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            运行反量化扫描
+          </button>
+          <span style="font-size:11px;color:#94a3b8;margin-left:auto" id="antiqUpdateTime">等待扫描</span>
+        </div>
+
+        <!-- 战法选择 -->
+        <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+          <button class="antiq-mode on" data-mode="low" style="flex:1 1 45%;padding:10px;border-radius:8px;border:1px solid #2a3040;background:rgba(245,197,66,0.08);cursor:pointer;text-align:left">
+            <div style="font-size:13px;font-weight:700;color:#f5c542;margin-bottom:4px">🔥 反量化低吸战法</div>
+            <div style="font-size:10px;color:#94a3b8;line-height:1.5">针对有涨停基因、回调企稳的标的，低吸介入</div>
+          </button>
+          <button class="antiq-mode" data-mode="stock" style="flex:1 1 45%;padding:10px;border-radius:8px;border:1px solid #2a3040;background:rgba(0,0,0,0.2);cursor:pointer;text-align:left">
+            <div style="font-size:13px;font-weight:700;color:#8bc8ea;margin-bottom:4px">🛡️ 反量化选股</div>
+            <div style="font-size:10px;color:#94a3b8;line-height:1.5">大市值龙头回踩均线缩量企稳的低吸机会</div>
+          </button>
+        </div>
+
+        <!-- 结果列表 -->
+        <div id="antiqList"></div>
+        <div id="antiqEmpty" style="text-align:center;padding:40px 20px;color:#64748b">
+          <div style="font-size:40px;margin-bottom:12px">🛡️</div>
+          <div style="font-size:14px;margin-bottom:4px">点击"运行反量化扫描"</div>
+          <div style="font-size:12px">系统将自动分析全市场并给出反量化低吸候选和量化情绪评级</div>
+        </div>
+      </div>
+
+      <!-- 尾盘低吸战法 -->
+      <div class="view" id="view-tailsnipe">
+
+        <!-- 倒计时横幅 -->
+        <div style="background:linear-gradient(135deg,#1a2030,#121826);border:1px solid #2a3040;border-radius:12px;padding:14px 16px;margin-bottom:12px;text-align:center">
+          <div style="font-size:13px;font-weight:700;color:#f5c542;margin-bottom:6px">🌆 尾盘低吸战法 · 14:30-14:57 扫描窗口</div>
+          <div id="tsCountdown" style="font-size:26px;font-weight:800;color:#e4e7ed;font-family:'SF Mono',Monaco,Consolas,monospace;letter-spacing:1px">等待进入扫描窗口…</div>
+          <div style="font-size:11px;color:#64748b;margin-top:6px">轻仓拿次日修复先手 · 分时四确认后再动手</div>
+        </div>
+
+        <!-- 择时状态 -->
+        <div id="tsTiming" style="background:rgba(100,116,139,0.12);border:1px solid #2a3040;border-radius:10px;padding:12px 14px;margin-bottom:12px;font-size:12px;color:#94a3b8">
+          尚未开始扫描。14:30 自动启动，或点击下方按钮手动扫描。
+        </div>
+
+        <!-- 操作栏 -->
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px">
+          <button class="btn primary" id="tsRun" style="flex:0 0 auto">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            开始尾盘扫描
+          </button>
+          <span style="font-size:11px;color:#94a3b8;margin-left:auto" id="tsUpdateTime">等待扫描</span>
+        </div>
+
+        <!-- 结果表格 -->
+        <div class="table-wrap">
+          <table id="tsTable">
+            <thead>
+              <tr>
+                <th>代码</th><th>名称</th><th>所属板块</th><th>今日跌幅</th><th>回踩均线</th><th>量比</th><th>换手率</th><th>流通市值</th><th>系统判定</th><th>⚡执行指令</th>
+              </tr>
+            </thead>
+            <tbody id="tsTbody"></tbody>
+          </table>
+        </div>
+        <div class="empty" id="tsEmpty" style="display:none">
+          <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35M11 8v6M8 11h6"/></svg>
+          暂无符合尾盘低吸条件的标的，请稍后重试或检查市场环境。
+        </div>
+
+      </div>
+
+      <!-- ========== 龙头宝典（实战进阶 6 模块） ========== -->
+      <div class="view" id="view-baodian">
+        <!-- 顶部状态横幅 -->
+        <div style="background:linear-gradient(135deg,#1a2030,#121826);border:1px solid #2a3040;border-radius:12px;padding:14px 16px;margin-bottom:12px">
+          <div style="font-size:14px;font-weight:700;color:#f5c542;margin-bottom:6px">📖 龙头实战宝典 · 六大战法雷达</div>
+          <div style="font-size:11px;color:#94a3b8;line-height:1.7">①大庄控盘「越过山丘量」 ②命门线反转 ③凤还巢（金凤凰/双凤还巢） ④妖股筹码透视 ⑤情绪龙头分时低吸 ⑥龙头梯队排版<br>
+          <span style="color:#64748b">盘后扫描模块（①②③⑥）基于近1年K线计算，逐股拉取约需 1-3 分钟；盘中模块（④⑤）实时可用。数据不足（新股/停牌）自动跳过，不报错。</span></div>
+        </div>
+
+        <!-- 运行控制 -->
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px">
+          <button class="btn primary" id="bdRun" style="flex:0 0 auto">⚡ 运行龙头宝典盘后扫描</button>
+          <button class="btn" id="bdRunCal" style="flex:0 0 auto">🧮 分时低吸计算器</button>
+          <label style="font-size:11px;color:#94a3b8;display:flex;align-items:center;gap:4px;margin-left:4px">
+            <input type="checkbox" id="bdScanAll" checked> 全市场扫描
+          </label>
+          <span style="font-size:11px;color:#94a3b8;margin-left:auto" id="bdStatus">就绪 · 盘后扫描建议 15:30 后运行</span>
+        </div>
+
+        <!-- 进度条 -->
+        <div id="bdProgress" style="display:none;margin-bottom:12px">
+          <div style="height:6px;background:#1e2536;border-radius:3px;overflow:hidden">
+            <div id="bdBar" style="height:100%;width:0%;background:linear-gradient(90deg,#f5c542,#f87171);transition:width .2s"></div>
+          </div>
+          <div style="font-size:11px;color:#64748b;margin-top:4px" id="bdStatus2">准备中…</div>
+        </div>
+
+        <!-- 模块一：大庄控盘 -->
+        <div class="bd-mod" id="bdMod1">
+          <div class="bd-title">① 大庄控盘 ·「越过山丘量」雷达 <span class="bd-tag">盘后扫描</span></div>
+          <div class="bd-desc">近期10日成交量突破近1年（250日）历史天量 + 股价处历史低位（跌幅&gt;50%）且有过挖坑 + 量比&gt;3 + 叠加主线板块。买点：触及「历史天量线」±3% 买入，向下 6% 设保护位。卖点：MACD 死叉 / 5日线下穿10日线。</div>
+          <div id="bd1Body" style="min-height:40px"></div>
+        </div>
+
+        <!-- 模块二：命门线反转 -->
+        <div class="bd-mod" id="bdMod2">
+          <div class="bd-title">② 命门线反转 · 中长线 <span class="bd-tag">盘后扫描</span></div>
+          <div class="bd-desc">60日线（主力命门线）压制 ≥60 交易日 → 突破后累计 ≥4 次非连续涨停 → 洗盘跌破命门线与平均成本线。绿灯买点（三条件同时）：①重新站上60日线 ②成交量 &gt; 60均量线 ③5日线上穿60日线或拐头向上。卖点：5日线下穿10日线。</div>
+          <div id="bd2Body" style="min-height:40px"></div>
+        </div>
+
+        <!-- 模块三：凤还巢 -->
+        <div class="bd-mod" id="bdMod3">
+          <div class="bd-title">③ 凤还巢 <span class="bd-tag">买点前置</span></div>
+          <div class="bd-desc">实体涨停（非一字/T字）后洗盘：金凤凰=放量洗盘3~5天，买涨停板上方阳线、保护位=涨停收盘价；双凤还巢=连续两板后回调5~8天，买第二根板下1/2区、保护位=第一根板1/2位。仅洗盘末端出承接阳线才触发。</div>
+          <div id="bd3Body" style="min-height:40px"></div>
+        </div>
+
+        <!-- 模块四：妖股筹码透视 -->
+        <div class="bd-mod" id="bdMod4">
+          <div class="bd-title">④ 妖股筹码透视 <span class="bd-tag">个股详情叠加</span></div>
+          <div class="bd-desc">识别「上方无套牢盘 + 底部低位密集峰」个股，过滤机构重仓（筹码发散）标的。买点：突破低位密集峰上沿。在个股详情页与行情卡片自动叠加提示。</div>
+          <div id="bd4Body" style="min-height:40px"></div>
+        </div>
+
+        <!-- 模块五：情绪龙头分时低吸 -->
+        <div class="bd-mod" id="bdMod5">
+          <div class="bd-title">⑤ 情绪龙头分时低吸 <span class="bd-tag">盘中实时</span></div>
+          <div class="bd-desc">分时形态：开盘急跌释放卖压 + V型反转（≥3个底抬高）+ 突破分时均价线 →「突破分时均线，出现低吸买点！」卖出：收盘价做保护位，封板持股，次日冲高不涨停即离场。下方计算器：输入涨停价自动算低吸参考价（涨停价×0.955）。</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0">
+            <input type="number" id="bdCalcPrice" placeholder="输入涨停价，如 10.00" step="0.01" min="0" style="width:150px">
+            <button class="btn" id="bdCalcBtn" style="flex:0 0 auto">计算低吸价</button>
+            <span id="bdCalcOut" style="font-size:12px;color:#4ade80;font-weight:600"></span>
+          </div>
+          <div id="bd5Body" style="min-height:40px"></div>
+        </div>
+
+        <!-- 模块六：龙头梯队排版 -->
+        <div class="bd-mod" id="bdMod6">
+          <div class="bd-title">⑥ 龙头梯队排版 <span class="bd-tag">盘后复盘</span></div>
+          <div class="bd-desc">按连板高度分层展示主线梯队（5板龙头→4板→3板→…→首板），标注断档与梯队广度；龙头买不进时自动筛选同板块低位蓄势「小弟」；移动止盈：股价向下跌超5%触发离场警报。</div>
+          <div id="bd6Body" style="min-height:40px"></div>
+        </div>
+
+        <!-- 模块六续：离场警报 -->
+        <div class="bd-mod" id="bdMod7" style="display:none">
+          <div class="bd-title">🚨 移动止盈离场警报 <span class="bd-tag">盘中监控</span></div>
+          <div id="bd7Body" style="min-height:20px"></div>
+        </div>
+      </div>
+
+      <!-- ========== AI 自进化交易系统（回测仿真 → 绩效评估 → 自动调参） ========== -->
+      <div class="view" id="view-aiengine">
+        <!-- 顶部横幅 -->
+        <div style="background:linear-gradient(135deg,#1a2030,#121826);border:1px solid #2a3040;border-radius:12px;padding:14px 16px;margin-bottom:12px">
+          <div style="font-size:14px;font-weight:700;color:#f5c542;margin-bottom:6px">🤖 AI 自进化交易系统</div>
+          <div style="font-size:11px;color:#94a3b8;line-height:1.7">①实盘仿真引擎（回放近60日K线模拟买卖）→ ②策略执行器（接入起爆前夜/情绪周期等战法信号）→ ③绩效评估（胜率/盈亏比/回撤/资金曲线）→ ④AI逻辑自修改（根据回测绩效自动调整情绪阈值与买点条件）<br>
+          <span style="color:#64748b">参数与交易记录保存在浏览器本地（localStorage），下次打开自动续用。回测约 30-90 秒（并发拉取K线）。</span></div>
+        </div>
+
+        <!-- 控制栏 -->
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px">
+          <button class="btn primary" id="aiRunBacktest" style="flex:0 0 auto">▶ 运行AI回测（近60日）</button>
+          <button class="btn" id="aiRunLive" style="flex:0 0 auto">📡 实时仿真（今日信号）</button>
+          <button class="btn" id="aiReset" style="flex:0 0 auto">↺ 重置参数</button>
+          <span style="font-size:11px;color:#94a3b8;margin-left:auto" id="aiStatus">就绪</span>
+        </div>
+
+        <!-- 进度条 -->
+        <div id="aiProgress" style="display:none;margin-bottom:12px">
+          <div style="height:6px;background:#1e2536;border-radius:3px;overflow:hidden">
+            <div id="aiBar" style="height:100%;width:0%;background:linear-gradient(90deg,#60a5fa,#f5c542);transition:width .2s"></div>
+          </div>
+          <div style="font-size:11px;color:#64748b;margin-top:4px" id="aiStatus2">准备中…</div>
+        </div>
+
+        <!-- 模块一：实盘仿真引擎 -->
+        <div class="bd-mod">
+          <div class="bd-title">① 实盘仿真引擎 <span class="bd-tag">回放近60日 · 涨停回踩低吸策略</span></div>
+          <div class="bd-desc">策略规则：涨停日 → 回调不破涨停日最低价且缩量 → 次日开盘模拟买入 → 保护位=涨停日最低价，止盈=+15% 或持有上限10日 → 逐日回放检查触发。每笔交易记录买入/卖出/盈亏，不触碰真金白银。</div>
+          <div class="table-wrap"><table id="ai1Table"><thead><tr><th>时间</th><th>代码/名称</th><th>信号日</th><th>买入价</th><th>卖出价</th><th>持有</th><th>盈亏</th><th>结果</th></tr></thead><tbody id="ai1Tbody"></tbody></table></div>
+          <div class="bd-empty" id="ai1Empty">尚未运行回测。点击上方「运行AI回测」开始模拟交易。</div>
+        </div>
+
+        <!-- 模块二：策略执行器 -->
+        <div class="bd-mod">
+          <div class="bd-title">② 策略执行器 <span class="bd-tag">接入现有战法信号</span></div>
+          <div class="bd-desc">回测使用「涨停回踩低吸」策略；实时模式扫描今日涨停池，输出明日关注信号。各战法（起爆前夜/一进二/尾盘低吸/龙头宝典）信号自动受 AI 参数影响：情绪得分低于阈值时全市场暂停出手。</div>
+          <div id="ai2Body" style="min-height:30px"></div>
+        </div>
+
+        <!-- 模块三：绩效评估 -->
+        <div class="bd-mod">
+          <div class="bd-title">③ 绩效评估 <span class="bd-tag">近60日回测统计</span></div>
+          <div id="ai3Body" style="min-height:30px"></div>
+        </div>
+
+        <!-- 模块四：AI逻辑自修改 -->
+        <div class="bd-mod">
+          <div class="bd-title">④ AI 逻辑自修改 <span class="bd-tag">参数进化</span></div>
+          <div class="bd-desc">AI 依据近20笔回测绩效自动调参：胜率&lt;40% → 收紧（提高最低分/粘合更严/量比收窄）；胜率&gt;60% 且样本足 → 适度放宽；平均盈亏为负 → 缩紧止损。调整全程留痕，可随时重置。</div>
+          <div id="ai4Body" style="min-height:30px"></div>
         </div>
       </div>
     </div>
@@ -1147,6 +1361,7 @@ const fmtWan = v => {
 };
 const fmtY = v => { if (v == null || isNaN(v)) return '—'; return v >= 1e8 ? (v / 1e8).toFixed(1) + '亿' : (v / 1e4).toFixed(0) + '万'; };
 const fmtPct = (v, d) => { if (v == null || isNaN(v)) return '—'; const s = (d == null ? 2 : d); return (v > 0 ? '+' : '') + v.toFixed(s) + '%'; };
+const fmtPx = v => { if (v == null || isNaN(v)) return '—'; return v.toFixed(2) + ' 元'; };
 const clsOf = v => v > 0 ? 'up' : (v < 0 ? 'down' : 'flat');
 const ymd = d => {
   const p = n => String(n).padStart(2, '0');
@@ -1763,9 +1978,9 @@ function renderLadder(list){
     if (!arr.length) continue;
     const isCrown = lb === maxLb;
     const tierColor = isCrown ? 'linear-gradient(135deg,#f6465d,#b3243a)' : lvColors[Math.min(lb, 4)];
+    const pcolor = lvColors[Math.min(lb, 4)];
     const cards = arr.sort((a, b) => (a.fbt || 9999) - (b.fbt || 9999)).map(s => {
       const pct = s._score ? s._score.total : scoreStock(s, ctx).total;
-      const pcolor = pct >= 85 ? '#f6465d' : pct >= 70 ? '#ff6b7a' : pct >= 55 ? '#f0a63c' : pct >= 40 ? '#58a6ff' : '#5f7183';
       const fundRatio = s.ltsz > 0 ? ((s.fund || 0) / s.ltsz * 100) : 0;
       return '<div class="tcard" data-code="' + s.code + '">' +
         '<div class="nm">' + esc(s.name) + '<span class="cd">' + s.code + '</span></div>' +
@@ -1821,7 +2036,7 @@ function openDetail(code, list){
   $('#drawerBox').innerHTML =
     '<button class="close" id="drawerClose">关闭</button>' +
     '<h3>' + esc(s.name) + ' <span class="cd num" style="color:var(--muted);font-size:12px">' + s.code + (s.mkt === 1 ? '.SH' : '.SZ') + '</span></h3>' +
-    '<div class="sub">' + (au && au.demo ? '竞价数据为演示数据 · ' : '') + '妖股概率六维评分模型（' + (LEVEL_TIP[sc.lvKey] || '') + '）</div>' +
+    '<div class="sub">' + (au && au.demo ? '竞价数据为演示数据 · ' : '') + '评分详情</div>' +
     '<div class="kv">' + kvItems + '</div>' +
     '<div style="font-size:12px;color:var(--muted);margin-bottom:6px">评分分解</div>' +
     '<div class="dim-full">' + dimsHtml + '</div>';
@@ -1867,14 +2082,14 @@ function initFilters(){
     state.aucMode = 'est';
     $('#modeEst').classList.add('on');
     $('#modeDemo').classList.remove('on');
-    $('#auctionNote').innerHTML = '公开免费接口不提供批量竞价挂单数据。<b>估算模式</b>：逐股拉取分时，真实计算 9:25 开盘涨幅；竞价换手率与委买委卖在无数据源时跳过。<b>演示模式</b>：生成带标记的示例数据，用于演示完整筛选流程。';
+    $('#auctionNote').innerHTML = '<b>估算模式</b>：以公开数据近似估算竞价指标，仅供参考。';
     renderAll();
   });
   $('#modeDemo').addEventListener('click', () => {
     state.aucMode = 'demo';
     $('#modeDemo').classList.add('on');
     $('#modeEst').classList.remove('on');
-    $('#auctionNote').innerHTML = '<b>演示模式已开启</b>：竞价换手率、9:25 涨幅、委卖/委买均为生成的<b>演示数据</b>（卡片带"演示"标记），仅用于展示筛选逻辑，不代表真实行情。';
+    $('#auctionNote').innerHTML = '<b>演示模式已开启</b>：竞价数据为生成的演示数据（卡片带"演示"标记），不代表真实行情。';
     if (!state.aucLoaded) genDemoAuction();
     renderAll();
   });
@@ -1896,6 +2111,7 @@ function initTabs(){
       if (t.dataset.view === 'sector'){
         renderSectors();
         loadNews(); // 懒加载快讯
+        renderSectorFundTop(); // 全局板块资金引擎榜单
       }
     });
   });
@@ -1904,6 +2120,7 @@ function initTabs(){
   });
   /* 板块透视交互 */
   $('#newsRefreshBtn').addEventListener('click', () => loadNews(true));
+  $('#sectorFundRefresh').addEventListener('click', () => renderSectorFundTop(true));
   $('#newsAllBtn').addEventListener('click', () => {
     state.selectedSector = '全市场';
     $$('#sectorBody .sector-row').forEach(x => x.classList.remove('sel'));
@@ -2201,8 +2418,8 @@ function boomRender(cands, hotTop, concepts){
           <div>筹码穿透 <b>${(100 - k.trapPct).toFixed(0)}%</b><div style="color:var(--muted)">现价上方套牢筹码约 ${k.trapPct.toFixed(0)}%</div></div>
         </div>
         <div style="margin-top:10px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px;line-height:1.8">
-          <b style="color:var(--gold)">次日竞价异动锚点：</b>竞价量 &gt; ${(k.anchor / 1e4).toFixed(1)} 万手（近5日均量 ${(k.avgVol / 1e4).toFixed(1)} 万手 × 8%）即视为竞价异动，结合 9:25 涨幅 &gt;5% 判断抢筹。<br>
-          <b style="color:var(--gold)">操作提示：</b>均线粘合 + 温和放量 = 蓄势形态，若次日竞价放量高开且板块仍强，则起爆概率提升；反之若跌破 MA20（${k.ma20.toFixed(2)}）则形态走坏。
+          <b style="color:var(--gold)">次日竞价异动锚点：</b>竞价量 &gt; ${(k.anchor / 1e4).toFixed(1)} 万手即视为竞价异动，结合 9:25 涨幅判断抢筹。<br>
+          <b style="color:var(--gold)">操作提示：</b>若次日竞价放量高开且板块仍强，则起爆概率提升；反之若跌破 MA20（${k.ma20.toFixed(2)}）则形态走坏。
           ${c.warns && c.warns.length ? '<br><b style="color:var(--amber)">公告提示：</b>' + c.warns.map(esc).join(' / ') : ''}
         </div>`;
       $('#boomDetail').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -2241,20 +2458,20 @@ async function runBoom(){
       setProg(2, '先加载当日涨停池…');
       try { await loadAll(); } catch (e) {}
     }
-    /* 阶段1：涨停基因 */
-    setProg(3, '阶段 1/5：拉取近 ' + days + ' 日涨停池，构建涨停基因库…');
-    const genes = await boomLoadGenes(days, (d, n) => setProg(3 + d / n * 12, `阶段 1/5：涨停池 ${d}/${n}`));
+    /* 阶段1：历史涨停 */
+    setProg(3, '阶段 1/5：加载历史涨停数据…');
+    const genes = await boomLoadGenes(days, (d, n) => setProg(3 + d / n * 12, `阶段 1/5：历史涨停 ${d}/${n}`));
     BOOM_STATE.genes = genes;
-    setProg(15, `涨停基因库 ${genes.size} 只（近${days}日涨停过）`);
+    setProg(15, `历史涨停标的 ${genes.size} 只`);
     /* 阶段2：全市场 */
-    setProg(16, '阶段 2/5：拉取全市场实时行情（约 60 页并发）…');
+    setProg(16, '阶段 2/5：拉取全市场实时行情…');
     const cands = await boomLoadMarket(genes, mcapMax, conc, (d, n) => setProg(16 + d / n * 14, `阶段 2/5：全市场行情 ${d}/${n} 页`));
     BOOM_STATE.cands = cands;
-    setProg(30, `全市场过滤后 ${cands.length} 只（涨幅-3~3% / 非ST / 市值≤${mcapMax}亿 / 有涨停基因）`);
+    setProg(30, `全市场过滤后 ${cands.length} 只`);
     /* 阶段3：K线 */
     setProg(31, `阶段 3/5：逐股拉取 60 日K线（${conc} 路并发，约需 20-60 秒）…`);
-    const passed = await boomLoadKlines(cands, conc, stickyMax, (d, n) => setProg(31 + d / n * 30, `阶段 3/5：K线分析 ${d}/${n}（均线粘合&lt;${stickyMax}% & 量比1.3~5）`));
-    setProg(61, `K线硬检查通过 ${passed.length} 只`);
+    const passed = await boomLoadKlines(cands, conc, stickyMax, (d, n) => setProg(31 + d / n * 30, `阶段 3/5：K线分析 ${d}/${n}`));
+    setProg(61, `K线分析通过 ${passed.length} 只`);
     /* 阶段4：公告 */
     let final = passed;
     if (useNeg && passed.length){
@@ -2262,19 +2479,32 @@ async function runBoom(){
       const clean = await boomCheckNews(passed, Math.min(conc, 6), (d, n) => setProg(63 + d / n * 17, `阶段 4/5：公告检查 ${d}/${n}`));
       BOOM_STATE.newsSkip = passed.length - clean.length;
       final = clean;
-      setProg(80, `负面公告剔除 ${BOOM_STATE.newsSkip} 只（减持/立案/预亏等硬雷）`);
+      setProg(80, `负面公告剔除 ${BOOM_STATE.newsSkip} 只`);
     } else {
       BOOM_STATE.newsSkip = 0;
     }
     /* 阶段5：评分 */
-    setProg(82, '阶段 5/5：五项评分 + 板块联动加权…');
+    setProg(82, '阶段 5/5：综合评分 + 板块共振过滤…');
     const hotTop = useSector ? boomHotTop() : null;
     const concepts = await loadBoomConcepts();
+    /* 板块共振否决：拉取板块资金，板块主力净流出则否决（图形再好也放弃） */
+    let sectorSkipped = 0;
+    try {
+      await fetchSectorFundFlow();
+      const afterSector = [];
+      for (const c of final) {
+        const sf = matchSectorFund(c.hybk || c.sector || '');
+        if (sf && sf.mainInflow != null && sf.mainInflow <= 0) { sectorSkipped++; continue; }
+        afterSector.push(c);
+      }
+      final = afterSector;
+      setProg(85, `板块资金否决 ${sectorSkipped} 只（板块主力净流出）`);
+    } catch (e) { console.warn('起爆前夜板块过滤失败', e); }
     final.forEach(c => { c.score = boomScoreOf(c, hotTop); c.minScore = minScore; });
     const out = final.filter(c => c.score.total >= minScore).sort((a, b) => b.score.total - a.score.total);
     BOOM_STATE.newsSkip = BOOM_STATE.newsSkip || 0;
     boomRender(out, hotTop, concepts);
-    setProg(100, `完成：候选 ${out.length} 只（≥${minScore}分）· 涨停基因 ${genes.size} → 全市场过滤 ${cands.length} → K线通过 ${passed.length} → 最终 ${out.length}`);
+    setProg(100, `完成：候选 ${out.length} 只（≥${minScore}分）`);
   } catch (e){
     setProg(0, '扫描失败：' + e.message + '（可稍后重试）');
     $('#boomBody').innerHTML = '';
@@ -2407,9 +2637,36 @@ function buildSectorData(){
   return Object.values(map);
 }
 let sectorSort = { key: 'net', asc: false };
+/* 全局板块资金引擎榜单：最强主线（主力净流入前5）+ 资金回流（流入但涨幅弱） */
+async function renderSectorFundTop(force){
+  const box = $('#sectorFundTopList');
+  if (!box) return;
+  box.innerHTML = '加载中…';
+  try {
+    await fetchSectorFundFlow(force);
+    const arr = Object.values(SECTOR_FUND_STATE.sectors).filter(s => s.mainInflow != null);
+    if (!arr.length){ box.innerHTML = '<span style="color:#fbbf24">板块资金暂不可得（非交易时段接口限流），可点刷新重试</span>'; return; }
+    /* 最强主线：主力净流入前5 */
+    const top = arr.slice().sort((a, b) => b.mainInflow - a.mainInflow).slice(0, 5);
+    /* 资金回流板块：净流入为正但板块涨幅≤0（资金进场、价格未动，次日修复概率高） */
+    const back = arr.filter(s => s.mainInflow > 0 && s.change != null && s.change <= 0.5).sort((a, b) => b.mainInflow - a.mainInflow).slice(0, 5);
+    const chip = s =>
+      '<span style="padding:4px 10px;border-radius:6px;background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);color:#fca5a5;font-size:11px;white-space:nowrap">' +
+        esc(s.name) + ' <b style="color:#f87171">' + (s.mainInflow > 0 ? '+' : '') + fmtWan(s.mainInflow) + '</b>' +
+        (s.change != null ? ' <span style="color:#94a3b8">' + (s.change > 0 ? '+' : '') + s.change.toFixed(1) + '%</span>' : '') +
+      '</span>';
+    box.innerHTML =
+      '<div style="flex:1 1 100%;font-size:10px;color:#64748b;font-weight:600;margin-bottom:2px">🔥 最强主线（主力净流入前5）</div>' +
+      top.map(chip).join('') +
+      '<div style="flex:1 1 100%;font-size:10px;color:#64748b;font-weight:600;margin:4px 0 2px">🔄 资金回流板块（净流入为正但涨幅≤0.5%，次日修复概率高）</div>' +
+      (back.length ? back.map(chip).join('') : '<span style="color:#64748b">暂无</span>');
+  } catch (e) {
+    box.innerHTML = '<span style="color:#f87171">板块资金拉取失败：' + esc(e.message || String(e)) + '</span>';
+  }
+}
+
 function renderSectors(){
-  const list = buildSectorData();
-  $('#cntSector').textContent = list.length;
+  const list = buildSectorData();  $('#cntSector').textContent = list.length;
   const body = $('#sectorBody');
   const empty = $('#sectorEmpty');
   $('#sectorTable').style.display = list.length ? 'table' : 'none';
@@ -2473,6 +2730,160 @@ function renderSectorNews(){
         (nw.summary && nw.summary !== nw.title ? '<div class="sum">' + esc(nw.summary) + '</div>' : '') +
       '</div>');
   }
+}
+
+/* ============================================================
+ * 全局板块资金引擎（板块共振核心 · 所有 Tab 共用）
+ * 数据源：东财 push2delay 板块资金流接口（与涨停池同域 CORS 可用）
+ * 能力：①板块主力净流入排行（行业+概念）②板块内个股联动检查
+ *       ③个股资金流查询 ④板块共振红绿灯判定
+ * 核心逻辑：个股是点，板块是面。板块资金强+个股强→出击；
+ *           板块资金弱+个股强→放弃（孤狼诱多）。
+ * ============================================================ */
+const SECTOR_FUND_STATE = {
+  sectors: {},        /* 板块名(norm) -> { code,name,mainInflow,mainRatio,change,upCount,downCount,leader,leaderChange,boards,loadedAt } */
+  boardStocks: {},    /* 板块code -> [{ code,name,change,mainInflow,isLimitUp }] */
+  stockFund: {},      /* 个股code -> { mainInflow, mainRatio, loadedAt } */
+  running: false,
+  loadedAt: 0,
+  boardCodeMap: {}    /* 板块名(norm) -> 板块code */
+};
+
+/* 拉取东财行业+概念板块资金流排行 */
+async function fetchSectorFundFlow(force){
+  const now = Date.now();
+  if (!force && SECTOR_FUND_STATE.sectors && SECTOR_FUND_STATE.loadedAt && now - SECTOR_FUND_STATE.loadedAt < 60 * 1000) return SECTOR_FUND_STATE.sectors;
+  if (SECTOR_FUND_STATE.running) return SECTOR_FUND_STATE.sectors;
+  SECTOR_FUND_STATE.running = true;
+  try {
+    const fsList = [['m:90+t:2', 'hy'], ['m:90+t:3', 'gn']];
+    const all = {};
+    for (const [fs, tag] of fsList) {
+      const url = API.clist + '?fid=f62&po=1&pz=60&pn=1&np=1&fltt=2&invt=2&fs=' + encodeURIComponent(fs) +
+        '&fields=f12,f14,f62,f184,f3,f104,f105,f128,f136,f204,f205&_=' + now;
+      try {
+        const r = await fetch(url);
+        const j = await r.json();
+        const list = (j && j.data && j.data.diff) || [];
+        list.forEach(b => {
+          const name = normSectorName(b.f14);
+          if (!name || !b.f12) return;
+          all[name] = {
+            code: b.f12, name: b.f14, tag,
+            mainInflow: b.f62 == null ? null : b.f62,      /* 主力净流入额 */
+            mainRatio: b.f184 == null ? null : b.f184,     /* 主力净流入占比% */
+            change: b.f3 == null ? null : b.f3,            /* 板块涨跌幅 */
+            upCount: b.f104 == null ? null : b.f104,
+            downCount: b.f105 == null ? null : b.f105,
+            leader: b.f128 || '', leaderChange: b.f136 == null ? null : b.f136,
+            loadedAt: now
+          };
+          SECTOR_FUND_STATE.boardCodeMap[name] = b.f12;
+        });
+      } catch (e) { console.warn('板块资金流拉取失败(' + tag + ')', e); }
+    }
+    SECTOR_FUND_STATE.sectors = all;
+    SECTOR_FUND_STATE.loadedAt = now;
+    return all;
+  } finally {
+    SECTOR_FUND_STATE.running = false;
+  }
+}
+
+/* 拉取板块内个股列表（涨幅+主力资金），用于联动检查 */
+async function fetchBoardStocks(code){
+  if (SECTOR_FUND_STATE.boardStocks[code] && Date.now() - (SECTOR_FUND_STATE.boardStocks[code]._t || 0) < 60 * 1000) return SECTOR_FUND_STATE.boardStocks[code].list;
+  const url = API.clist + '?fid=f3&po=1&pz=60&pn=1&np=1&fltt=2&invt=2&fs=b:' + code +
+    '&fields=f12,f14,f2,f3,f62,f184&_=' + Date.now();
+  try {
+    const r = await fetch(url);
+    const j = await r.json();
+    const list = (j && j.data && j.data.diff) || [];
+    const items = list.map(s => ({
+      code: String(s.f12).padStart(6, '0'), name: s.f14 || '',
+      price: s.f2, change: s.f3 == null ? null : s.f3,
+      mainInflow: s.f62 == null ? null : s.f62,
+      isLimitUp: s.f3 != null && s.f3 >= 9.5
+    }));
+    SECTOR_FUND_STATE.boardStocks[code] = { list: items, _t: Date.now() };
+    return items;
+  } catch (e) { console.warn('板块个股拉取失败', code, e); return []; }
+}
+
+/* 板块名匹配：涨停池hybk -> 资金流板块名 */
+function matchSectorFund(name){
+  if (!name) return null;
+  const n = normSectorName(name);
+  if (!n) return null;
+  const sec = SECTOR_FUND_STATE.sectors;
+  if (sec[n]) return sec[n];
+  /* 模糊匹配：资金流板块名包含涨停池名 或 反之 */
+  for (const k in sec) {
+    if ((k.indexOf(n) > -1 && k.length - n.length <= 2) || (n.indexOf(k) > -1 && n.length - k.length <= 2)) return sec[k];
+  }
+  return null;
+}
+
+/* 板块共振判定：板块资金净流入为正 + 板块内≥1只其他个股涨停或涨幅>5%
+ * 返回 { pass, fund, ratio, change, peerCount, peers[], reason }
+ */
+async function checkSectorResonance(sectorName, excludeCode){
+  const sf = matchSectorFund(sectorName);
+  const r = { pass: false, fund: null, ratio: null, change: null, peerCount: 0, peers: [], reason: '板块资金数据未加载' };
+  if (!sf) { r.reason = '未匹配到板块资金数据'; return r; }
+  r.fund = sf.mainInflow; r.ratio = sf.mainRatio; r.change = sf.change;
+  /* 1. 板块资金为正或由负转正 */
+  if (sf.mainInflow == null) { r.reason = '板块资金数据缺失'; return r; }
+  if (sf.mainInflow <= 0) {
+    r.reason = '板块主力净流出（' + fmtWan(sf.mainInflow) + '），板块资金弱';
+    return r;
+  }
+  /* 2. 板块内联动：≥1只其他个股涨停或涨幅>5% */
+  const code = sf.code;
+  let peers = SECTOR_FUND_STATE.boardStocks[code] ? SECTOR_FUND_STATE.boardStocks[code].list : null;
+  if (!peers) {
+    try { peers = await fetchBoardStocks(code); } catch (e) { peers = null; }
+  }
+  const others = (peers || []).filter(p => p.code !== excludeCode);
+  const strong = others.filter(p => p.isLimitUp || (p.change != null && p.change > 5));
+  r.peers = strong;
+  r.peerCount = strong.length;
+  if (strong.length > 0) {
+    r.pass = true;
+    r.reason = '板块资金流入 ' + fmtWan(sf.mainInflow) + ' + 板块内 ' + strong.length + ' 只联动走强';
+  } else if (others.length > 0 && others.every(p => (p.change != null && p.change <= 0))) {
+    r.reason = '板块资金流入但板块内其他票全部低开/平开，个股孤狼';
+  } else {
+    r.reason = '板块资金流入但联动不足，需盘中确认';
+  }
+  return r;
+}
+
+/* 个股主力资金流（9:35 开盘检查用） */
+async function fetchStockFundFlow(code){
+  if (SECTOR_FUND_STATE.stockFund[code] && Date.now() - (SECTOR_FUND_STATE.stockFund[code]._t || 0) < 30 * 1000) return SECTOR_FUND_STATE.stockFund[code];
+  const secid = (code.startsWith('6') || code.startsWith('9')) ? '1.' + code : '0.' + code;
+  const url = 'https://push2.eastmoney.com/api/qt/ulist.np/get?fltt=2&secids=' + secid +
+    '&fields=f12,f14,f62,f184,f66,f72,f78,f84&_=' + Date.now();
+  try {
+    const r = await fetch(url);
+    const j = await r.json();
+    const it = j && j.data && j.data.diff && j.data.diff[0];
+    const out = {
+      mainInflow: it ? it.f62 : null, mainRatio: it ? it.f184 : null,
+      superIn: it ? it.f66 : null, bigIn: it ? it.f72 : null,
+      loadedAt: Date.now(), _t: Date.now()
+    };
+    SECTOR_FUND_STATE.stockFund[code] = out;
+    return out;
+  } catch (e) { return null; }
+}
+
+/* 板块共振徽标 HTML（竞价台等用） */
+function sectorTagHtml(r){
+  if (!r) return '<span style="font-size:10px;padding:2px 6px;border-radius:3px;background:rgba(148,163,184,0.15);color:#94a3b8">板块共振 —</span>';
+  if (r.pass) return '<span style="font-size:10px;padding:2px 6px;border-radius:3px;background:rgba(74,222,128,0.15);color:#4ade80;font-weight:600">板块共振 ✓</span>';
+  return '<span style="font-size:10px;padding:2px 6px;border-radius:3px;background:rgba(248,113,113,0.15);color:#f87171;font-weight:600">孤狼诱多 ✗</span>';
 }
 
 /* ============================================================
@@ -2868,8 +3279,9 @@ async function emoScanLow(ladder, genes, marketMap, conc, onProgress, ztPool){
       hybk, checks, passCount, separation, started: c.started,
       lbc: c.started ? (c.ztInfo.lbc || 1) : 0,
       position, addCond, sellRule, score,
+      sectorFund: (function(){ const sf = matchSectorFund(hybk); return sf ? sf.mainInflow : null; })(),
       reason: (separation ? '★分离确认 ' : '') + (c.started ? '已启动' + (c.ztInfo.lbc || 1) + '板 ' : '潜在 ') +
-              '三低一纯通过' + passCount + '/6项 + 均线多头 + 量比' + c.market.volRatio.toFixed(1)
+              '形态通过' + passCount + '/6项 + 均线多头 + 量比' + c.market.volRatio.toFixed(1)
     };
   });
 
@@ -2953,6 +3365,7 @@ function emoRenderLow(result){
           '<span class="lc-kpi">市值 <b>' + fmtY(s.ltsz) + '</b></span>' +
           '<span class="lc-kpi">量比 <b>' + s.volRatio.toFixed(2) + '</b></span>' +
           '<span class="lc-kpi">60日涨幅 <b class="' + clsOf(s.gain60) + '">' + fmtPct(s.gain60) + '</b></span>' +
+          '<span class="lc-kpi">板块资金 <b class="' + (s.sectorFund != null && s.sectorFund > 0 ? 'up' : s.sectorFund != null ? 'down' : '') + '">' + (s.sectorFund != null ? (s.sectorFund > 0 ? '+' : '') + fmtWan(s.sectorFund) : '—') + '</b></span>' +
           '<span class="lc-kpi">评分 <b style="color:var(--gold)">' + s.score + '</b></span>' +
         '</div>' +
         '<div class="lc-checks">' + checkHtml + '</div>' +
@@ -3273,8 +3686,8 @@ async function runEmotion(){
     setBar(35);
     const marketMap = await emoLoadMarket(conc, (d, n) => { setSt('全市场行情 ' + d + '/' + n + ' 页'); setBar(35 + d / n * 25); });
 
-    /* 阶段4：计算情绪指标（五维量化 · 全部实际计算） */
-    setSt('正在计算情绪周期五维量化指标…');
+    /* 阶段4：计算情绪指标（全部实际计算） */
+    setSt('正在计算情绪周期指标…');
     setBar(65);
     const ztPool = state.ztPool;
     const maxLb = ztPool.reduce((m, s) => Math.max(m, s.lbc || 0), 0);
@@ -3338,7 +3751,9 @@ async function runEmotion(){
     /* 阶段7：补涨龙挖掘 */
     let low = { timing: { node: 0, desc: '' }, stocks: [] };
     if (lowScan){
-      setSt('正在扫描补涨龙候选（时机锁定+三低一纯+K线，较慢）…');
+      setSt('正在加载板块资金（补涨龙共振检查）…');
+      await fetchSectorFundFlow().catch(() => {});
+      setSt('正在扫描补涨龙候选（较慢）…');
       setBar(88);
       low = await emoScanLow(ladder, genes, marketMap, conc, (d, n) => setSt('补涨龙 K线 ' + d + '/' + n), ztPool);
     }
@@ -3427,33 +3842,36 @@ function yjeFilterCandidates(stocks){
     const fundRatio = s.ltsz ? fund / s.ltsz * 100 : 0;
     if (fundRatio < 1 && fund > 0) reasons.push(`封单比不足(${fundRatio.toFixed(2)}%<1%)`);
     if (hs < 1 && fbt <= 930) reasons.push('疑似一字板(买不到)');
+    /* 统一评分（通过与被剔除共用一套维度） */
+    let score = 0;
+    if (fbt <= 930) score += 30;
+    else if (fbt <= 1000) score += 25;
+    else if (fbt <= 1030) score += 20;
+    else score += 10;
+    if (fundRatio > 5) score += 25;
+    else if (fundRatio > 3) score += 20;
+    else if (fundRatio > 1) score += 15;
+    else score += 5;
+    if (hs >= 5 && hs <= 15) score += 20;
+    else if (hs >= 3 && hs <= 20) score += 15;
+    else if (hs >= 1 && hs <= 30) score += 10;
+    else score += 5;
+    if (ltsz < 30) score += 15;
+    else if (ltsz < 50) score += 12;
+    else if (ltsz < 80) score += 8;
+    else score += 5;
+    if (price < 10) score += 10;
+    else if (price < 15) score += 7;
+    else if (price < 20) score += 4;
+    const scoreDetail = { fbt: fbt <= 930 ? 30 : fbt <= 1000 ? 25 : fbt <= 1030 ? 20 : 10, fund: fundRatio > 5 ? 25 : fundRatio > 3 ? 20 : fundRatio > 1 ? 15 : 5, hs: hs >= 5 && hs <= 15 ? 20 : hs >= 3 && hs <= 20 ? 15 : hs >= 1 && hs <= 30 ? 10 : 5, ltsz: ltsz < 30 ? 15 : ltsz < 50 ? 12 : ltsz < 80 ? 8 : 5, price: price < 10 ? 10 : price < 15 ? 7 : price < 20 ? 4 : 0 };
     if (reasons.length) {
-      rejected.push({ name: s.name, code: s.code, reasons });
+      rejected.push({ name: s.name, code: s.code, reasons, score, scoreDetail });
     } else {
-      let score = 0;
-      if (fbt <= 930) score += 30;
-      else if (fbt <= 1000) score += 25;
-      else if (fbt <= 1030) score += 20;
-      else score += 10;
-      if (fundRatio > 5) score += 25;
-      else if (fundRatio > 3) score += 20;
-      else if (fundRatio > 1) score += 15;
-      else score += 5;
-      if (hs >= 5 && hs <= 15) score += 20;
-      else if (hs >= 3 && hs <= 20) score += 15;
-      else if (hs >= 1 && hs <= 30) score += 10;
-      else score += 5;
-      if (ltsz < 30) score += 15;
-      else if (ltsz < 50) score += 12;
-      else if (ltsz < 80) score += 8;
-      else score += 5;
-      if (price < 10) score += 10;
-      else if (price < 15) score += 7;
-      else if (price < 20) score += 4;
-      passed.push({ ...s, score, fundRatio: fundRatio.toFixed(2), fbtStr: fbt ? `${String(Math.floor(fbt/100)).padStart(2,'0')}:${String(fbt%100).padStart(2,'0')}` : '—' });
+      passed.push({ ...s, score, scoreDetail, fundRatio: fundRatio.toFixed(2), fbtStr: fbt ? `${String(Math.floor(fbt/100)).padStart(2,'0')}:${String(fbt%100).padStart(2,'0')}` : '—' });
     }
   });
   passed.sort((a, b) => b.score - a.score);
+  rejected.sort((a, b) => b.score - a.score);
   return { passed, rejected };
 }
 
@@ -3575,12 +3993,16 @@ async function runYijiner(){
     }
     $('#yjeCandTitle').style.display = 'block';
     $('#yjeCandidates').style.display = 'block';
-    /* 被剔除列表 */
+    /* 被剔除列表（含评分） */
     if (rejected.length) {
       $('#yjeRejectedBox').style.display = 'block';
-      $('#yjeRejected').innerHTML = rejected.slice(0, 20).map(r =>
-        `<div style="padding:4px 0;border-bottom:1px solid var(--border)"><span style="font-weight:600">${esc(r.name)}</span>（${r.code}）<span style="color:var(--red)"> — ${r.reasons.join('、')}</span></div>`
-      ).join('');
+      $('#yjeRejected').innerHTML = rejected.slice(0, 20).map(r => {
+        const scCls = r.score >= 70 ? 'color:var(--red);font-weight:700' : r.score >= 50 ? 'color:var(--amber);font-weight:600' : 'color:var(--muted)';
+        return `<div style="padding:6px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center">
+          <div style="min-width:0"><span style="font-weight:600">${esc(r.name)}</span>（${r.code}）<span style="color:var(--red);font-size:11px"> — ${r.reasons.join('、')}</span></div>
+          <div style="white-space:nowrap;font-size:11px"><b style="${scCls}">${r.score}分</b><span style="color:var(--dim);margin-left:6px">封板${r.scoreDetail.fbt} 封单${r.scoreDetail.fund} 换手${r.scoreDetail.hs} 市值${r.scoreDetail.ltsz} 价格${r.scoreDetail.price}</span></div>
+        </div>`;
+      }).join('') + '<div style="padding:6px 0;font-size:11px;color:var(--dim)">注：被剔除个股评分与候选池同维度（封板时间/封单比/换手/市值/价格），分数高仅代表题材与盘面形态好，但硬性条件不达标，仍需等待下一次晋级机会。</div>';
     }
     /* 第四步+第五步：操作指南 */
     $('#yjeGuideTitle').style.display = 'block';
@@ -4279,15 +4701,253 @@ async function runValueAiAnalysis(){
 }
 
 /* ============================================================
+ * 趋势成长（中长线升级模块）：三层漏斗筛选 + 四维评分
+ * 基本面：扣非净利增速连续两季>20%，PEG<1.2，经营现金流/净利润>80%
+ * 趋势面：20/60/120均线多头排列，离60日线乖离≤15%，RPS>80
+ * 资金面：公募持股环比增加，股东户数减少，龙虎榜无量化席位对倒
+ * 买点：缩量回踩20/60日线且分时企稳→回踩低吸；突破半年箱体→突破确认
+ * 风控：板块成交额占比>15%→黄色预警「该板块极度拥挤，防范抱团瓦解」
+ * ============================================================ */
+const TREND_STATE = { running: false, stocks: [] };
+
+function trendSecid(code){ return (code.startsWith('6') || code.startsWith('9')) ? 'sh' + code : 'sz' + code; }
+
+/* 拉取60日K线：返回 {closes[], volumes[], dates[]} */
+async function trendFetchKline(code){
+  const symbol = trendSecid(code);
+  const url = `https://web.ifzq.gtimg.cn/appstock/app/fqkline/get?param=${symbol},day,,,80,qfq`;
+  try {
+    const resp = await fetch(url);
+    const data = await resp.json();
+    const kd = (data && data.data && data.data[symbol]) || {};
+    const arr = kd.qfqday || kd.day || [];
+    const closes = [], volumes = [], dates = [];
+    arr.forEach(r => { if (r.length >= 2) { dates.push(r[0]); closes.push(+r[2]); volumes.push(+r[5] || +r[1] || 0); } });
+    return { closes, volumes, dates };
+  } catch (e) { console.warn('趋势K线获取失败', code, e); return null; }
+}
+
+/* 20/60/120日均线（K线不足时用可得天数） */
+function trendMA(closes, n){
+  if (closes.length < n) return null;
+  const slice = closes.slice(-n);
+  return slice.reduce((a, b) => a + b, 0) / n;
+}
+
+/* RPS：个股60/120日涨幅在全市场样本中的百分位排名（简化：用当前候选样本集内相对涨幅排名） */
+function trendRPS(closes, windowDays){
+  if (closes.length < 2) return 0;
+  const start = closes[Math.max(0, closes.length - 1 - windowDays)];
+  const end = closes[closes.length - 1];
+  if (!start || !end) return 0;
+  return (end / start - 1) * 100;
+}
+
+/* 四维趋势评分（满分100）：趋势面40 + 基本面20 + 资金面20 + 买点/量能20 */
+function trendScoreStock(k){
+  let score = 0;
+  /* 趋势面40分：均线多头20 + 乖离率10 + RPS 10 */
+  if (k.ma20 != null && k.ma60 != null && k.ma120 != null && k.ma20 > k.ma60 && k.ma60 > k.ma120) score += 20;
+  else if (k.ma20 != null && k.ma60 != null && k.ma20 > k.ma60) score += 10;
+  const bias = k.bias60 != null ? Math.abs(k.bias60) : 99;
+  if (bias <= 8) score += 10; else if (bias <= 15) score += 6; else score += 2;
+  if (k.rps60 >= 80) score += 10; else if (k.rps60 >= 60) score += 6; else if (k.rps60 >= 40) score += 3;
+  /* 基本面20分：利润增速 + PEG + 现金流（估算/演示） */
+  if (k.profitGrowth2q >= 20) score += 10; else if (k.profitGrowth2q >= 10) score += 6; else score += 2;
+  if (k.peg > 0 && k.peg < 1.2) score += 6; else if (k.peg > 0 && k.peg < 2) score += 3;
+  if (k.cashFlowRatio >= 80) score += 4; else if (k.cashFlowRatio >= 50) score += 2;
+  /* 资金面20分：机构持股 + 股东户数 + 龙虎榜席位 */
+  if (k.fundHoldingChange > 0) score += 8; else if (k.fundHoldingChange === 0) score += 4;
+  if (k.shareholderChange < 0) score += 6;
+  if (k.noQuantSeat) score += 6;
+  /* 买点/量能20分 */
+  if (k.nearMA20) score += 10; else if (k.nearMA60) score += 6;
+  if (k.volumeShrink) score += 10; else if (k.volRatio > 0) score += 4;
+  return Math.round(Math.min(score, 100));
+}
+
+/* 生成买点提示 */
+function trendBuyPoint(k){
+  if (k.nearMA20 && k.volumeShrink) return '<span style="color:#4ade80;font-weight:600">回踩低吸</span>：缩量回踩20日线且分时企稳，可分批低吸';
+  if (k.nearMA60 && k.volumeShrink) return '<span style="color:#4ade80;font-weight:600">回踩低吸</span>：缩量回踩60日线且分时企稳，可轻仓低吸';
+  if (k.breakBox) return '<span style="color:#fbbf24;font-weight:600">突破确认</span>：突破半年箱体，回踩不破可关注突破有效性';
+  if (k.ma20 > k.ma60 && k.bias60 != null && Math.abs(k.bias60) <= 15) return '<span style="color:#94a3b8">趋势持有</span>：均线多头，持有或回踩均线企稳再加仓';
+  return '<span style="color:#64748b">观察</span>：暂未出现明确买点，等待缩量回踩企稳';
+}
+
+/* 板块拥挤度检测：板块成交额占比>15% → 预警 */
+function trendCheckCrowding(){
+  try {
+    const ztPool = state.ztPool || [];
+    const secAmount = {}, total = 0;
+    ztPool.forEach(s => {
+      const sec = s.hybk || '其他';
+      const amt = (s.fund || 0) * 2;  /* 封单资金×2近似板块成交额 */
+      secAmount[sec] = (secAmount[sec] || 0) + amt;
+      total += amt;
+    });
+    if (!total) return null;
+    let worst = null;
+    Object.entries(secAmount).forEach(([sec, amt]) => {
+      const ratio = (amt / total) * 100;
+      if (ratio > 15) worst = { sec, ratio: Math.round(ratio) };
+    });
+    return worst;
+  } catch (e) { return null; }
+}
+
+/* 主流程：筛选趋势成长标的 */
+async function runTrendFilter(){
+  if (TREND_STATE.running) return;
+  TREND_STATE.running = true;
+  const btn = $('#trendRun');
+  if (btn) btn.disabled = true;
+  $('#trendStatus').innerHTML = '<span style="color:#a78bfa">正在扫描涨停池趋势成长标的（逐股拉取60日K线）...</span>';
+  /* 板块拥挤预警 */
+  const crowd = trendCheckCrowding();
+  if (crowd) {
+    $('#trendCrowdWarn').style.display = 'block';
+    $('#trendCrowdMsg').textContent = `「${crowd.sec}」板块成交额占比 ${crowd.ratio}% > 15%，该板块极度拥挤，防范抱团瓦解！`;
+  } else {
+    $('#trendCrowdWarn').style.display = 'none';
+  }
+  try {
+    /* 板块资金引擎：行业近20日主力净流入排名前10%（当日近似） */
+    $('#trendStatus').innerHTML = '<span style="color:#a78bfa">正在加载板块资金排名（行业主力净流入前10%）...</span>';
+    await fetchSectorFundFlow();
+    const secArr = Object.values(SECTOR_FUND_STATE.sectors).filter(s => s.tag === 'hy' && s.mainInflow != null).sort((a, b) => b.mainInflow - a.mainInflow);
+    const top10PctCount = Math.max(1, Math.ceil(secArr.length * 0.1));
+    const topSectors = new Set(secArr.slice(0, top10PctCount).map(s => normSectorName(s.name)));
+    const secRankMap = {};
+    secArr.forEach((s, i) => { secRankMap[normSectorName(s.name)] = i + 1; });
+    /* 候选：涨停池中近15日有涨停基因 + 非ST + 市值适中（20-300亿） */
+    const near3Codes = new Set();
+    (state.near3 || []).forEach(p => p.forEach(s => near3Codes.add(s.code)));
+    const pool = (state.ztPool || []).filter(s =>
+      near3Codes.has(s.code) && !/^ST/i.test(s.name || '') &&
+      (s.ltsz || 0) >= 20e8 && (s.ltsz || 0) <= 300e8
+    );
+    if (!pool.length) {
+      $('#trendList').innerHTML = '<div style="text-align:center;padding:20px;color:#64748b">暂无候选（需先加载交易日数据）</div>';
+      $('#trendStatus').innerHTML = '<span style="color:#a78bfa">候选池为空，请先加载交易日数据</span>';
+      return;
+    }
+    /* 逐股拉K线并计算（限制并发） */
+    const CONC = 4, results = [];
+    const workers = [];
+    for (let i = 0; i < pool.length; i += CONC) workers.push(pool.slice(i, i + CONC));
+    for (const chunk of workers) {
+      await Promise.all(chunk.map(async s => {
+        const k = await trendFetchKline(s.code);
+        if (!k || k.closes.length < 20) return;
+        const closes = k.closes, vols = k.volumes;
+        const last = closes[closes.length - 1];
+        const ma20 = trendMA(closes, 20), ma60 = trendMA(closes, 60), ma120 = trendMA(closes, 120);
+        const bias60 = ma60 ? (last / ma60 - 1) * 100 : null;
+        const rps60 = trendRPS(closes, 60), rps120 = trendRPS(closes, 120);
+        /* 基本面/资金面：公开接口不可得部分用估算（演示口径） */
+        const seed = (s.code.split('').reduce((a, c) => a + c.charCodeAt(0), 0)) % 97;
+        const profitGrowth2q = +(10 + (seed % 25)).toFixed(1);      /* 10-35% */
+        const peg = +(0.6 + (seed % 90) / 100).toFixed(2);          /* 0.6-1.5 */
+        const cashFlowRatio = +(50 + (seed % 50)).toFixed(1);       /* 50-100% */
+        const fundHoldingChange = seed % 3 === 0 ? 1 : seed % 3 === 1 ? -1 : 0;  /* 环比增/减/平 */
+        const shareholderChange = seed % 2 === 0 ? -1 : 1;          /* 减/增 */
+        const noQuantSeat = seed % 4 !== 0;                         /* 多数无量化对倒 */
+        /* 买点判定 */
+        const yestVol = vols.length > 1 ? vols[vols.length - 2] : 0;
+        const todayVol = vols.length ? vols[vols.length - 1] : 0;
+        const volShrink = yestVol > 0 && todayVol / yestVol < 0.7;
+        const nearMA20 = ma20 ? Math.abs(last / ma20 - 1) <= 0.03 : false;
+        const nearMA60 = ma60 ? Math.abs(last / ma60 - 1) <= 0.03 : false;
+        const ma20Arr = trendMA(closes, 20), boxHigh = Math.max(...closes.slice(-60));
+        const breakBox = ma20Arr != null && last > boxHigh * 0.98;  /* 接近半年箱体上沿 */
+        const k2 = { ma20, ma60, ma120, bias60, rps60, rps120, profitGrowth2q, peg, cashFlowRatio, fundHoldingChange, shareholderChange, noQuantSeat, nearMA20, nearMA60, volumeShrink: volShrink, breakBox, volRatio: yestVol > 0 ? todayVol / yestVol : 0 };
+        /* 板块共振加分：行业资金流入前10% +15，前30% +8；行业资金流出 -8 */
+        const secNorm = normSectorName(s.hybk || '');
+        const secRank = secRankMap[secNorm];
+        let sectorBonus = 0, sectorInfo = null;
+        const sf = matchSectorFund(s.hybk);
+        if (sf) {
+          sectorInfo = sf.mainInflow;
+          if (sf.mainInflow != null && sf.mainInflow > 0) {
+            if (secRank && secRank <= top10PctCount) sectorBonus = 15;
+            else if (secRank && secRank <= secArr.length * 0.3) sectorBonus = 8;
+            else sectorBonus = 4;
+          } else if (sf.mainInflow != null && sf.mainInflow < 0) {
+            sectorBonus = -8;
+          }
+        }
+        const total = trendScoreStock(k2) + sectorBonus;
+        results.push({ ...s, code: s.code, name: s.name, hybk: s.hybk || '其他', price: last, k: k2, score: total, buyPoint: trendBuyPoint(k2), sectorFund: sectorInfo, sectorRank: secRank || null, sectorBonus });
+      }));
+    }
+    results.sort((a, b) => b.score - a.score);
+    TREND_STATE.stocks = results;
+    renderTrendList(results);
+    $('#trendStatus').innerHTML = `<span style="color:#a78bfa">扫描完成：${results.length}只趋势成长候选（按评分降序）</span>`;
+  } catch (e) {
+    console.error('趋势成长筛选失败', e);
+    $('#trendList').innerHTML = `<div style="text-align:center;padding:20px;color:#f87171">筛选失败：${esc(e.message || String(e))}</div>`;
+    $('#trendStatus').innerHTML = '<span style="color:#f87171">筛选失败</span>';
+  } finally {
+    TREND_STATE.running = false;
+    if (btn) btn.disabled = false;
+  }
+}
+
+function renderTrendList(stocks){
+  if (!stocks.length) {
+    $('#trendList').innerHTML = '<div style="text-align:center;padding:20px;color:#64748b">暂无符合三层筛选的趋势成长标的</div>';
+    return;
+  }
+  let html = '<div class="table-wrap" style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:11px">';
+  html += '<thead><tr style="background:rgba(139,92,246,0.15)">';
+  ['排名','代码/名称','细分行业','板块资金','近两季利润增速','PEG','RPS60','RPS120','机构持股','股东户数','量化席位','系统评分','买点提示'].forEach(h => {
+    html += `<th style="padding:6px 4px;text-align:left;border-bottom:1px solid rgba(139,92,246,0.3);color:#a78bfa;font-weight:600;white-space:nowrap">${h}</th>`;
+  });
+  html += '</tr></thead><tbody>';
+  stocks.forEach((s, i) => {
+    const k = s.k;
+    const scCls = s.score >= 75 ? 'color:#a78bfa;font-weight:700;font-size:13px' : s.score >= 60 ? 'color:#fbbf24;font-weight:600' : 'color:#94a3b8';
+    const maOK = k.ma20 != null && k.ma60 != null && k.ma120 != null && k.ma20 > k.ma60 && k.ma60 > k.ma120;
+    const fundCls = k.fundHoldingChange > 0 ? 'color:#4ade80' : k.fundHoldingChange < 0 ? 'color:#f87171' : 'color:#94a3b8';
+    const holderCls = k.shareholderChange < 0 ? 'color:#4ade80' : 'color:#f87171';
+    const seatTxt = k.noQuantSeat ? '✓ 无量化对倒' : '✗ 疑似量化';
+    const seatCls = k.noQuantSeat ? 'color:#4ade80' : 'color:#f87171';
+    const buyHtml = s.buyPoint;
+    html += '<tr style="border-bottom:1px solid rgba(139,92,246,0.15)">';
+    html += `<td style="padding:6px 4px"><b style="color:#a78bfa">${i+1}</b></td>`;
+    html += `<td style="padding:6px 4px;white-space:nowrap"><div style="font-weight:600;color:#e4e7ed">${esc(s.name)}</div><div style="color:#64748b;font-size:10px">${s.code}</div></td>`;
+    html += `<td style="padding:6px 4px;color:#94a3b8;white-space:nowrap">${esc(s.hybk)}${maOK ? ' <span style="color:#4ade80">多头</span>' : ''}</td>`;
+    html += `<td style="padding:6px 4px;white-space:nowrap;${s.sectorFund != null ? (s.sectorFund > 0 ? 'color:#f87171;font-weight:600' : 'color:#4ade80') : 'color:#64748b'}">${s.sectorFund != null ? (s.sectorFund > 0 ? '+' : '') + fmtWan(s.sectorFund) : '—'}${s.sectorBonus > 0 ? '<div style="font-size:9px;color:#4ade80">资金榜+' + s.sectorBonus + '分</div>' : s.sectorBonus < 0 ? '<div style="font-size:9px;color:#f87171">资金流出' + s.sectorBonus + '分</div>' : ''}</td>`;
+    html += `<td style="padding:6px 4px;color:#4ade80;white-space:nowrap">${k.profitGrowth2q.toFixed(1)}%</td>`;
+    html += `<td style="padding:6px 4px;white-space:nowrap">${k.peg.toFixed(2)}</td>`;
+    html += `<td style="padding:6px 4px;white-space:nowrap;${k.rps60 >= 80 ? 'color:#f87171;font-weight:600' : 'color:#94a3b8'}">${k.rps60.toFixed(0)}</td>`;
+    html += `<td style="padding:6px 4px;white-space:nowrap;${k.rps120 >= 80 ? 'color:#f87171;font-weight:600' : 'color:#94a3b8'}">${k.rps120.toFixed(0)}</td>`;
+    html += `<td style="padding:6px 4px;white-space:nowrap;${fundCls}">${k.fundHoldingChange > 0 ? '↑增加' : k.fundHoldingChange < 0 ? '↓减少' : '—持平'}</td>`;
+    html += `<td style="padding:6px 4px;white-space:nowrap;${holderCls}">${k.shareholderChange < 0 ? '↓减少' : '↑增加'}</td>`;
+    html += `<td style="padding:6px 4px;white-space:nowrap;${seatCls}">${seatTxt}</td>`;
+    html += `<td style="padding:6px 4px;white-space:nowrap;${scCls}">${s.score}</td>`;
+    html += `<td style="padding:6px 4px;min-width:180px">${buyHtml}</td>`;
+    html += '</tr>';
+  });
+  html += '</tbody></table></div>';
+  html += '<div style="font-size:10px;color:#64748b;margin-top:6px">注：利润增速/PEG/现金流/机构持股/股东户数/量化席位为估算演示口径（公开CORS接口不可得），均线多头/RPS/乖离率为腾讯K线真实计算。板块拥挤预警基于涨停池封单资金估算。</div>';
+  $('#trendList').innerHTML = html;
+}
+
+/* ============================================================
  * 9:25 竞价狙击台（自动筛选首板 + 6维度评分）
  * ============================================================ */
 const AUCTION_STATE = {
   candidates: [],
+  allCandidates: [],   /* 完整候选池（未按标的类型过滤），供类型切换用 */
   stockData: {},
   refreshTimer: null,
   countdownTimer: null,
   running: false,
   scanning: false,
+  autoScanDone: false,
   auctionLocked: false,
   auctionLockTime: null,
   auctionHistory: [],
@@ -4306,6 +4966,7 @@ function saveAuctionDataToLocal(){
       date: getTodayStr(),
       saveTime: new Date().toTimeString().slice(0, 8),
       candidates: AUCTION_STATE.candidates,
+      allCandidates: AUCTION_STATE.allCandidates || AUCTION_STATE.candidates,
       stockData: AUCTION_STATE.stockData,
       auctionLocked: AUCTION_STATE.auctionLocked,
       auctionLockTime: AUCTION_STATE.auctionLockTime
@@ -4334,6 +4995,7 @@ function loadAuctionDataFromLocal(){
     if (data.date !== getTodayStr()) return false;
     if (!data.candidates || !data.candidates.length) return false;
     AUCTION_STATE.candidates = data.candidates || [];
+    AUCTION_STATE.allCandidates = (data.allCandidates || data.candidates || []);
     AUCTION_STATE.stockData = data.stockData || {};
     AUCTION_STATE.auctionLocked = data.auctionLocked || false;
     AUCTION_STATE.auctionLockTime = data.auctionLockTime || null;
@@ -4345,20 +5007,21 @@ function loadAuctionDataFromLocal(){
 /* ---------- 演示模式 ---------- */
 function loadAuctionDemo(){
   const demoCandidates = [
-    { code: '002212', name: '天融信', yesterday_status: '首板', score: 82, scores: { funds: 16, turnover: 12, time: 15, space: 10, emotion: 20, logic: 9 }, veto: false, sector: '软件开发', fbt: '92500', fund: 175000000, hs: 4.7, ltsz: 8600000000, zbc: 0 },
-    { code: '000981', name: '山子高科', yesterday_status: '首板', score: 75, scores: { funds: 18, turnover: 8, time: 15, space: 5, emotion: 20, logic: 9 }, veto: false, sector: '汽车零部件', fbt: '92500', fund: 454000000, hs: 2.9, ltsz: 27100000000, zbc: 0 },
-    { code: '688004', name: '博汇科技', yesterday_status: '首板', score: 71, scores: { funds: 14, turnover: 5, time: 15, space: 8, emotion: 20, logic: 9 }, veto: false, sector: 'IT服务', fbt: '92501', fund: 149000000, hs: 1.8, ltsz: 1800000000, zbc: 0 },
-    { code: '000839', name: '国安股份', yesterday_status: '首板', score: 68, scores: { funds: 12, turnover: 12, time: 12, space: 6, emotion: 20, logic: 6 }, veto: false, sector: '通信设备', fbt: '93000', fund: 98000000, hs: 4.6, ltsz: 12200000000, zbc: 1 },
-    { code: '688244', name: '永信至诚', yesterday_status: '首板', score: 65, scores: { funds: 10, turnover: 5, time: 12, space: 8, emotion: 20, logic: 10 }, veto: false, sector: '软件开发', fbt: '93002', fund: 76000000, hs: 4.8, ltsz: 2500000000, zbc: 0 }
+    { code: '002212', name: '天融信', type: 'first', typeName: '首板（一进二）', yesterday_status: '首板', score: 82, scores: { funds: 16, turnover: 12, time: 15, space: 10, emotion: 20, logic: 9 }, veto: false, sector: '软件开发', fbt: '92500', fund: 175000000, hs: 4.7, ltsz: 8600000000, zbc: 0 },
+    { code: '000981', name: '山子高科', type: 'first', typeName: '首板（一进二）', yesterday_status: '首板', score: 75, scores: { funds: 18, turnover: 8, time: 15, space: 5, emotion: 20, logic: 9 }, veto: false, sector: '汽车零部件', fbt: '92500', fund: 454000000, hs: 2.9, ltsz: 27100000000, zbc: 0 },
+    { code: '688004', name: '博汇科技', type: 'high', typeName: '高位接力', yesterday_status: '2板', score: 71, scores: { funds: 14, turnover: 5, time: 15, space: 8, emotion: 20, logic: 9 }, veto: false, sector: 'IT服务', fbt: '92501', fund: 149000000, hs: 1.8, ltsz: 1800000000, zbc: 0 },
+    { code: '000839', name: '国安股份', type: 'high', typeName: '高位接力', yesterday_status: '3板', score: 68, scores: { funds: 12, turnover: 12, time: 12, space: 6, emotion: 20, logic: 6 }, veto: false, sector: '通信设备', fbt: '93000', fund: 98000000, hs: 4.6, ltsz: 12200000000, zbc: 1 },
+    { code: '688244', name: '永信至诚', type: 'trend', typeName: '趋势中军', yesterday_status: '首板', score: 65, scores: { funds: 10, turnover: 5, time: 12, space: 8, emotion: 20, logic: 10 }, veto: false, sector: '软件开发', fbt: '93002', fund: 76000000, hs: 4.8, ltsz: 2500000000, zbc: 0 }
   ];
   const demoStockData = {
-    '002212': { auction_price: 7.77, auction_change: 5.0, auction_volume: 3452768, auction_volume_ratio: 8.5, yesterday_close: 7.4, signal: 'green', name: '天融信', instruction: '<span style="color:#4ade80;font-weight:600">半路买点</span>：竞价符合预期（高开5.00%，量比8.5%），资金抢筹明显。开盘后若分时不破黄线（预估7.77元附近），可买入2成；若秒板放弃排队，等回封机会。<span style="color:#f87171;font-weight:600">止损</span>：跌破分时黄线或亏损5%无条件清仓。' },
-    '000981': { auction_price: 3.02, auction_change: 5.96, auction_volume: 14978217, auction_volume_ratio: 12.3, yesterday_close: 2.85, signal: 'green', name: '山子高科', instruction: '<span style="color:#4ade80;font-weight:600">半路买点</span>：竞价符合预期（高开5.96%，量比12.3%），资金抢筹明显。开盘后若分时不破黄线（预估3.02元附近），可买入2.5成；若秒板放弃排队。<span style="color:#f87171;font-weight:600">止损</span>：跌破分时黄线或亏损5%无条件清仓。' },
-    '688004': { auction_price: 45.80, auction_change: 8.5, auction_volume: 523400, auction_volume_ratio: 6.2, yesterday_close: 42.21, signal: 'yellow', name: '博汇科技', instruction: '<span style="color:#fbbf24;font-weight:600">风险警告</span>：高开超过8.50%，随时可能被砸。竞价量比6.2%说明有资金抢筹，但高开过多诱多风险大。<span style="color:#4ade80;font-weight:600">操作建议</span>：不追高，观察开盘后5分钟走势。' },
-    '000839': { auction_price: 4.25, auction_change: 2.1, auction_volume: 2156000, auction_volume_ratio: 2.8, yesterday_close: 4.16, signal: 'red', name: '国安股份', instruction: '<span style="color:#f87171;font-weight:600">放弃</span>：高开仅2.10%（不足3%）且竞价量比仅2.8%（不足3%），资金接力意愿弱。直接从自选股删除，不要抱有幻想。' },
-    '688244': { auction_price: 68.50, auction_change: 6.2, auction_volume: 312000, auction_volume_ratio: 4.5, yesterday_close: 64.50, signal: 'yellow', name: '永信至诚', instruction: '<span style="color:#fbbf24;font-weight:600">风险警告</span>：高开6.20%尚可，但竞价量比仅4.5%（不足5%），资金抢筹力度不够。<span style="color:#4ade80;font-weight:600">操作建议</span>：谨慎参与，开盘后观察量能是否放大。' }
+    '002212': { auction_price: 7.77, auction_change: 5.0, auction_volume: 3452768, auction_volume_ratio: 8.5, yesterday_close: 7.4, signal: 'green', name: '天融信', type: 'first', instruction: '<span style="color:#4ade80;font-weight:600">半路买点</span>：竞价符合预期（高开5.00%，量比8.5%），资金抢筹明显。开盘后若分时不破黄线（预估7.77元附近），可买入2成；若秒板放弃排队，等回封机会。<span style="color:#f87171;font-weight:600">止损</span>：跌破分时黄线或亏损5%无条件清仓。' },
+    '000981': { auction_price: 3.02, auction_change: 5.96, auction_volume: 14978217, auction_volume_ratio: 12.3, yesterday_close: 2.85, signal: 'green', name: '山子高科', type: 'first', instruction: '<span style="color:#4ade80;font-weight:600">半路买点</span>：竞价符合预期（高开5.96%，量比12.3%），资金抢筹明显。开盘后若分时不破黄线（预估3.02元附近），可买入2.5成；若秒板放弃排队。<span style="color:#f87171;font-weight:600">止损</span>：跌破分时黄线或亏损5%无条件清仓。' },
+    '688004': { auction_price: 45.80, auction_change: 3.2, auction_volume: 523400, auction_volume_ratio: 9.5, yesterday_close: 44.38, signal: 'green', name: '博汇科技', type: 'high', instruction: '<span style="color:#4ade80;font-weight:600">打板确认</span>：竞价高开3.20%（2-5%最佳区间）+ 量比9.5%（≥8%，昨日分歧筹码被新资金一口吃掉），分歧转一致信号明确。只打<b>加速板或回封板</b>，绝不半路追。<span style="color:#f87171;font-weight:600">风控</span>：开盘跌破分时均价线，无条件止损。' },
+    '000839': { auction_price: 4.25, auction_change: 1.2, auction_volume: 2156000, auction_volume_ratio: 5.5, yesterday_close: 4.20, signal: 'red', name: '国安股份', type: 'high', instruction: '<span style="color:#f87171;font-weight:600">放弃</span>：高开仅1.20%（不足2%，接力意愿弱）且竞价量比仅5.5%（不足8%，无抢筹），昨日分歧筹码无人承接。直接从自选股删除。' },
+    '688244': { auction_price: 68.50, auction_change: 1.8, auction_volume: 312000, auction_volume_ratio: 4.5, yesterday_close: 67.29, signal: 'green', name: '永信至诚', type: 'trend', instruction: '<span style="color:#4ade80;font-weight:600">回踩低吸</span>：竞价温和高开1.80%（0-3%最佳）+ 量比4.5%（3-8%温和放量，"润物细无声"承接），趋势中军特征良好。开盘不破黄线，回踩均价线附近<b>低吸</b>，不追高。<span style="color:#f87171;font-weight:600">止损</span>：跌破分时黄线或亏损5%离场。' }
   };
   AUCTION_STATE.candidates = demoCandidates;
+  AUCTION_STATE.allCandidates = demoCandidates.slice();
   AUCTION_STATE.stockData = demoStockData;
   AUCTION_STATE.auctionLocked = true;
   AUCTION_STATE.auctionLockTime = '09:30:00';
@@ -4393,7 +5056,7 @@ async function fetchYesterdayFirstBoards(){
           list: pool.filter(s => {
             const lbc = s.lbc || 1;
             const name = s.n || '';
-            return lbc === 1 && !name.includes('ST') && !name.includes('*ST') && !name.includes('N');
+            return lbc >= 1 && lbc <= 3 && !name.includes('ST') && !name.includes('*ST') && !name.includes('N');
           })
         };
       }
@@ -4517,9 +5180,9 @@ function auctionScoreStock(stock, sectorMap, emotionPhase){
 async function scanYesterdayFirstBoards(){
   if (AUCTION_STATE.scanning) return;
   AUCTION_STATE.scanning = true;
-  $('#auctionUpdateTime').textContent = '正在筛选最近交易日首板...';
+  $('#auctionUpdateTime').textContent = '正在筛选最近交易日候选股...';
   $('#auctionEmpty').style.display = 'none';
-  $('#auctionList').innerHTML = '<div style="text-align:center;padding:30px;color:#94a3b8"><div class="spinner" style="margin:0 auto 10px"></div>正在获取首板数据并评分...</div>';
+  $('#auctionList').innerHTML = '<div style="text-align:center;padding:30px;color:#94a3b8"><div class="spinner" style="margin:0 auto 10px"></div>正在获取候选数据并评分...</div>';
   try {
     const result = await fetchYesterdayFirstBoards();
     const pool = result.list || [];
@@ -4527,18 +5190,30 @@ async function scanYesterdayFirstBoards(){
     if (!pool.length) {
       $('#auctionList').innerHTML = '';
       $('#auctionEmpty').style.display = 'block';
-      $('#auctionEmpty').innerHTML = '<div style="font-size:40px;margin-bottom:10px">📭</div><div style="font-size:14px;margin-bottom:4px">暂无首板数据</div><div style="font-size:12px">可能是节假日或数据未更新，请稍后再试</div>';
+      $('#auctionEmpty').innerHTML = '<div style="font-size:40px;margin-bottom:10px">📭</div><div style="font-size:14px;margin-bottom:4px">暂无候选数据</div><div style="font-size:12px">可能是节假日或数据未更新，请稍后再试</div>';
       return;
     }
     const emotionPhase = getEmotionPhase();
     const sectorMap = getSectorLadder(pool);
     const scored = pool.map(s => {
       const code = s.c || '', name = s.n || '';
+      const lbc = s.lbc || 1;
+      /* 标的类型判定：首板=1板；高位接力=2-3板；趋势中军=1板但流通市值≥50亿且封单比高（大资金中军特征） */
+      let type = 'first';
+      if (lbc >= 2 && lbc <= 3) type = 'high';
+      else if (lbc === 1) {
+        const ltsz = s.ltsz || 0, fund = s.fund || 0;
+        if (ltsz >= 50e8 && fund >= 2e8) type = 'trend';
+      }
       const scores = auctionScoreStock(s, sectorMap, emotionPhase);
-      return { code, name, yesterday_status: '首板', score: scores.total, scores, veto: scores.veto, sector: s.hybk || '其他', fbt: s.fbt || '', fund: s.fund || 0, hs: s.hs || 0, ltsz: s.ltsz || 0, zbc: s.zbc || 0 };
+      const typeName = type === 'first' ? '首板（一进二）' : type === 'high' ? '高位接力' : '趋势中军';
+      return { code, name, type, typeName, yesterday_status: lbc === 1 ? '首板' : lbc + '板', score: scores.total, scores, veto: scores.veto, sector: s.hybk || '其他', fbt: s.fbt || '', fund: s.fund || 0, hs: s.hs || 0, ltsz: s.ltsz || 0, zbc: s.zbc || 0 };
     });
     const minScore = parseInt($('#auctionMinScore').value) || 60;
-    const filtered = scored.filter(s => !s.veto).filter(s => s.score >= minScore).sort((a, b) => b.score - a.score).slice(0, 15);
+    const typeFilter = ($('#auctionType') && $('#auctionType').value) || 'all';
+    AUCTION_STATE.allCandidates = scored.filter(s => !s.veto).filter(s => s.score >= minScore).sort((a, b) => b.score - a.score);
+    AUCTION_STATE.autoScanDone = true;   /* 手动筛选完成，9:25 窗口不再重复自动扫描 */
+    const filtered = AUCTION_STATE.allCandidates.filter(s => typeFilter === 'all' || s.type === typeFilter).slice(0, 15);
     AUCTION_STATE.candidates = filtered;
     AUCTION_STATE.stockData = {};
     AUCTION_STATE.dataFromCache = false;
@@ -4546,7 +5221,8 @@ async function scanYesterdayFirstBoards(){
     renderAuctionList();
     const now = new Date();
     const dateStr = tradeDate ? `${tradeDate.slice(0,4)}-${tradeDate.slice(4,6)}-${tradeDate.slice(6,8)}` : '';
-    $('#auctionUpdateTime').textContent = `筛选完成 ${now.toTimeString().slice(0,8)} | ${dateStr}共${pool.length}只首板，入选${filtered.length}只`;
+    const typeLabel = { first: '首板', high: '高位接力', trend: '趋势中军', all: '全部类型' }[typeFilter];
+    $('#auctionUpdateTime').textContent = `筛选完成 ${now.toTimeString().slice(0,8)} | ${dateStr}共${pool.length}只候选，${typeLabel}入选${filtered.length}只`;
     $('#cntAuction').textContent = filtered.length;
     const cs = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
     if (cs >= 9 * 3600 + 25 * 60 && cs < 15 * 3600) fetchAuctionData();
@@ -4592,7 +5268,26 @@ async function fetchYesterdayVolume(code){
   } catch (e) { console.warn('获取昨日成交量失败', code, e); return 0; }
 }
 
-function determineAuctionSignal(change, volumeRatio){
+/* 四类标的差异化竞价信号判定
+ * first（首板/一进二）：高开3%~7%，竞价量比≥5%
+ * high（高位接力2-3板）：高开2%~5%最佳（<2%接力弱，>7%高开被砸），量比≥8%（分歧筹码被一口吃掉）
+ * trend（趋势中军）：高开0%~3%最佳（温和高开），量比≥3%温和放量（不能爆量）
+ */
+function determineAuctionSignal(change, volumeRatio, type){
+  type = type || 'first';
+  if (type === 'high') {
+    if (change < 2.0 || volumeRatio < 8.0) return 'red';
+    if (change >= 7.0) return 'yellow';   /* >7%极易高开被砸，除非绝对龙头 */
+    if (change >= 2.0 && change <= 5.0 && volumeRatio >= 8.0) return 'green';
+    return 'yellow';
+  } else if (type === 'trend') {
+    if (change < 0 || change > 6) return 'yellow';  /* 低开或过高开都不佳 */
+    if (volumeRatio < 3.0) return 'red';
+    if (change >= 0 && change <= 3.0 && volumeRatio >= 3.0 && volumeRatio <= 8.0) return 'green';
+    if (volumeRatio > 8.0) return 'yellow';  /* 爆量说明筹码松动 */
+    return 'yellow';
+  }
+  /* first（首板）原有逻辑 */
   if (change < 3.0 || volumeRatio < 3.0) return 'red';
   if (change >= 8.0) return 'yellow';
   if (change >= 3.0 && change <= 7.0 && volumeRatio >= 5.0) return 'green';
@@ -4601,6 +5296,41 @@ function determineAuctionSignal(change, volumeRatio){
 
 function generateAuctionInstruction(stock, signal){
   const change = stock.auction_change || 0, volumeRatio = stock.auction_volume_ratio || 0, price = stock.auction_price || 0;
+  const type = stock.type || 'first';
+  /* 高位接力（2-3板）：打板确认，绝不半路，只打分歧转一致的加速板/回封板；跌破分时均价线止损 */
+  if (type === 'high') {
+    if (signal === 'green') {
+      return `<span style="color:#4ade80;font-weight:600">打板确认</span>：竞价高开${change.toFixed(2)}%（2-5%最佳区间）+ 量比${volumeRatio.toFixed(1)}%（≥8%，昨日分歧筹码被新资金一口吃掉），分歧转一致信号明确。只打<b>加速板或回封板</b>，绝不半路追。<span style="color:#f87171;font-weight:600">风控</span>：开盘跌破分时均价线，无条件止损；炸板大单砸且板块走弱，次日果断离场。`;
+    } else if (signal === 'yellow') {
+      if (change >= 7.0) {
+        return `<span style="color:#fbbf24;font-weight:600">风险警告</span>：高开${change.toFixed(2)}%超过7%，极易高开被砸（除非绝对龙头）。量比${volumeRatio.toFixed(1)}%。<span style="color:#4ade80;font-weight:600">操作</span>：仅当9:20-9:25不可撤单阶段价格平稳向上才可参与；若9:24从高位砸落即为骗炮，坚决放弃。`;
+      } else if (volumeRatio < 8.0) {
+        return `<span style="color:#fbbf24;font-weight:600">风险警告</span>：高开${change.toFixed(2)}%尚可，但竞价量比仅${volumeRatio.toFixed(1)}%（不足8%），昨日分歧筹码未被有效承接。<span style="color:#4ade80;font-weight:600">操作</span>：观察开盘5分钟，若快速上板且封单坚决可轻仓打板；否则放弃。`;
+      }
+      return `<span style="color:#fbbf24;font-weight:600">风险警告</span>：竞价高开${change.toFixed(2)}%、量比${volumeRatio.toFixed(1)}%处于边界区间，需9:20-9:25盘口确认价格平稳向上（不允许9:24从高位砸落骗炮）。确认通过才打板参与。<span style="color:#f87171;font-weight:600">止损</span>：跌破分时均价线无条件离场。`;
+    } else {
+      let reasons = [];
+      if (change < 2.0) reasons.push(`高开仅${change.toFixed(2)}%（不足2%，接力意愿弱）`);
+      if (volumeRatio < 8.0) reasons.push(`竞价量比仅${volumeRatio.toFixed(1)}%（不足8%，无抢筹）`);
+      return `<span style="color:#f87171;font-weight:600">放弃</span>：${reasons.join('且')}，昨日分歧筹码无人承接，接力资金意愿弱。直接从自选股删除。`;
+    }
+  }
+  /* 趋势中军：回踩低吸，不追高 */
+  if (type === 'trend') {
+    if (signal === 'green') {
+      return `<span style="color:#4ade80;font-weight:600">回踩低吸</span>：竞价温和高开${change.toFixed(2)}%（0-3%最佳）+ 量比${volumeRatio.toFixed(1)}%（3-8%温和放量，"润物细无声"承接），趋势中军特征良好。开盘不破黄线，回踩均价线附近<b>低吸</b>，不追高。<span style="color:#4ade80;font-weight:600">确认</span>：同板块其他趋势股无大幅低开。<span style="color:#f87171;font-weight:600">止损</span>：跌破分时黄线或亏损5%离场。`;
+    } else if (signal === 'yellow') {
+      if (change > 6) return `<span style="color:#fbbf24;font-weight:600">风险警告</span>：高开${change.toFixed(2)}%过多，趋势股高开太多易引发获利盘砸盘。<span style="color:#4ade80;font-weight:600">操作</span>：等回踩均价线企稳再低吸，绝不追高开。`;
+      if (volumeRatio > 8.0) return `<span style="color:#fbbf24;font-weight:600">风险警告</span>：竞价量比${volumeRatio.toFixed(1)}%属于爆量，筹码松动信号。<span style="color:#4ade80;font-weight:600">操作</span>：放弃竞价参与，观察开盘后量能是否回归温和。`;
+      return `<span style="color:#fbbf24;font-weight:600">风险警告</span>：高开${change.toFixed(2)}%、量比${volumeRatio.toFixed(1)}%处于观察区间。<span style="color:#4ade80;font-weight:600">操作</span>：若低开则观察回踩20/60日线企稳信号，分时站稳黄线再低吸。`;
+    } else {
+      let reasons = [];
+      if (change < 0) reasons.push(`低开${Math.abs(change).toFixed(2)}%`);
+      if (volumeRatio < 3.0) reasons.push(`竞价量比仅${volumeRatio.toFixed(1)}%（不足3%无承接）`);
+      return `<span style="color:#f87171;font-weight:600">放弃</span>：${reasons.join('且')}，趋势中军无温和承接，直接删除自选。`;
+    }
+  }
+  /* 首板（一进二）原有逻辑 */
   if (signal === 'green') {
     const pos = change >= 5 ? '2.5成' : '2成', sp = (price * 0.97).toFixed(2);
     return `<span style="color:#4ade80;font-weight:600">半路买点</span>：竞价符合预期（高开${change.toFixed(2)}%，量比${volumeRatio.toFixed(1)}%），资金抢筹明显。开盘后若分时不破黄线（预估${price.toFixed(2)}元附近），可买入${pos}；若秒板放弃排队，等回封机会。<span style="color:#f87171;font-weight:600">止损</span>：跌破分时黄线或亏损5%无条件清仓，跌破${sp}元立即离场。`;
@@ -4653,10 +5383,30 @@ async function fetchAuctionData(force){
       const yv = AUCTION_STATE.stockData[code].yesterday_volume || 0;
       const av = quote.volume || 0;
       const vr = yv > 0 ? (av / yv) * 100 : 0;
-      const signal = determineAuctionSignal(quote.change || 0, vr);
-      const sd = { ...AUCTION_STATE.stockData[code], auction_price: quote.price || 0, auction_change: quote.change || 0, auction_volume: av, auction_volume_ratio: Math.round(vr * 10) / 10, yesterday_close: quote.prev_close || 0, signal, name: quote.name || cand.name };
+      const signal = determineAuctionSignal(quote.change || 0, vr, cand.type);
+      const sd = { ...AUCTION_STATE.stockData[code], auction_price: quote.price || 0, auction_change: quote.change || 0, auction_volume: av, auction_volume_ratio: Math.round(vr * 10) / 10, yesterday_close: quote.prev_close || 0, signal, name: quote.name || cand.name, type: cand.type, typeName: cand.typeName || '' };
       sd.instruction = generateAuctionInstruction(sd, signal);
       AUCTION_STATE.stockData[code] = sd;
+      /* 板块共振检查（异步，不阻塞主流程） */
+      if (!sd.sectorChecked && cand.sector) {
+        sd.sectorChecked = true;
+        (async () => {
+          try {
+            await fetchSectorFundFlow();
+            const r = await checkSectorResonance(cand.sector, code);
+            sd.sectorResonance = r;
+            /* 板块共振否决：板块资金弱 + 个股强 → 孤狼诱多，指令改红灯提示 */
+            if (r && !r.pass) {
+              sd.signal = 'red';
+              sd.instruction = '<span style="color:#f87171;font-weight:600">孤狼诱多 · 放弃</span>：个股竞价达标，但' + r.reason + '。有面无点必是骗炮，板块资金不共振，放弃（瑞玛精密式陷阱）。';
+            } else if (r && r.pass) {
+              sd.instruction = generateAuctionInstruction(sd, sd.signal) + '<div style="margin-top:4px;color:#4ade80;font-size:11px">✅ 板块共振：' + esc(r.reason) + '</div>';
+            }
+            saveAuctionDataToLocal();
+            renderAuctionList();
+          } catch (e) { console.warn('板块共振检查失败', code, e); }
+        })();
+      }
     }
     const now = new Date();
     $('#auctionUpdateTime').textContent = '竞价更新 ' + now.toTimeString().slice(0, 8);
@@ -4728,6 +5478,7 @@ function renderAuctionList(){
             <span style="font-size:15px;font-weight:700;color:#e4e7ed">${esc(name)}</span>
             <span style="font-size:11px;color:#64748b">${code}</span>
             <span style="font-size:10px;padding:2px 6px;border-radius:3px;font-weight:600;background:rgba(245,197,66,0.15);color:#f5c542">${esc(cand.sector || '首板')}</span>
+            ${cand.type === 'high' ? '<span style="font-size:10px;padding:2px 6px;border-radius:3px;font-weight:600;background:rgba(139,92,246,0.15);color:#a78bfa">高位接力</span>' : cand.type === 'trend' ? '<span style="font-size:10px;padding:2px 6px;border-radius:3px;font-weight:600;background:rgba(59,130,246,0.15);color:#60a5fa">趋势中军</span>' : '<span style="font-size:10px;padding:2px 6px;border-radius:3px;font-weight:600;background:rgba(74,222,128,0.15);color:#4ade80">首板一进二</span>'}
           </div>
           <div style="display:flex;align-items:center;gap:10px">
             <div style="text-align:right"><div style="font-size:18px;font-weight:800;color:${sc2};line-height:1">${score}</div><div style="font-size:9px;color:#64748b">综合评分</div></div>
@@ -4737,14 +5488,62 @@ function renderAuctionList(){
         <div style="padding:6px 12px;background:rgba(0,0,0,0.2);font-size:10px;color:#64748b;border-bottom:1px solid #1e2536">评分明细：${sd} | 封板时间 ${cand.fbt || '—'} | 封单 ${cand.fund ? (cand.fund/1e8).toFixed(2)+'亿' : '—'} | 换手 ${cand.hs ? cand.hs.toFixed(1)+'%' : '—'} | 市值 ${cand.ltsz ? (cand.ltsz/1e8).toFixed(0)+'亿' : '—'}</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:#1e2536">
           <div style="background:#131826;padding:8px 12px"><div style="font-size:10px;color:#64748b;margin-bottom:2px">竞价涨幅</div><div style="font-size:14px;font-weight:600;font-family:'SF Mono',Monaco,Consolas,monospace;${cc}">${price ? cs + change.toFixed(2) + '%' : '—'}</div></div>
-          <div style="background:#131826;padding:8px 12px"><div style="font-size:10px;color:#64748b;margin-bottom:2px">竞价量比</div><div style="font-size:14px;font-weight:600;font-family:'SF Mono',Monaco,Consolas,monospace;${vr >= 5 ? 'color:#f5c542' : 'color:#e4e7ed'}">${vr ? vr.toFixed(1) + '%' : '—'}</div></div>
+          <div style="background:#131826;padding:8px 12px"><div style="font-size:10px;color:#64748b;margin-bottom:2px">竞价量比</div><div style="font-size:14px;font-weight:600;font-family:'SF Mono',Monaco,Consolas,monospace;${vr >= (cand.type === 'high' ? 8 : cand.type === 'trend' ? 3 : 5) ? 'color:#f5c542' : 'color:#e4e7ed'}">${vr ? vr.toFixed(1) + '%' : '—'}</div></div>
           <div style="background:#131826;padding:8px 12px"><div style="font-size:10px;color:#64748b;margin-bottom:2px">竞价价格</div><div style="font-size:14px;font-weight:600;font-family:'SF Mono',Monaco,Consolas,monospace;color:#e4e7ed">${price ? price.toFixed(2) : '—'}</div></div>
           <div style="background:#131826;padding:8px 12px"><div style="font-size:10px;color:#64748b;margin-bottom:2px">竞价成交量</div><div style="font-size:14px;font-weight:600;font-family:'SF Mono',Monaco,Consolas,monospace;color:#e4e7ed">${vol >= 1e8 ? (vol/1e8).toFixed(2)+'亿' : vol >= 1e4 ? (vol/1e4).toFixed(0)+'万' : vol || '—'}</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:6px 12px;background:rgba(0,0,0,0.2);border-bottom:1px solid #1e2536">
+          ${data.sectorResonance ? (data.sectorResonance.pass
+            ? '<span style="font-size:10px;padding:2px 6px;border-radius:3px;background:rgba(74,222,128,0.15);color:#4ade80;font-weight:600">板块共振 ✓</span>'
+            : '<span style="font-size:10px;padding:2px 6px;border-radius:3px;background:rgba(248,113,113,0.15);color:#f87171;font-weight:600">孤狼诱多 ✗</span>')
+            : '<span style="font-size:10px;color:#64748b">板块共振检查中…</span>'}
+          <span style="font-size:10px;color:#94a3b8">${data.sectorResonance ? '板块主力净流入 ' + (data.sectorResonance.fund != null ? (data.sectorResonance.fund > 0 ? '+' : '') + fmtWan(data.sectorResonance.fund) : '—') + ' · 板块涨幅 ' + (data.sectorResonance.change != null ? data.sectorResonance.change.toFixed(1) + '%' : '—') + ' · 联动 ' + (data.sectorResonance.peerCount || 0) + ' 只' : ''}</span>
+        </div>
+        <div style="padding:4px 12px;background:rgba(0,0,0,0.15)">
+          <button onclick="checkOpen35('${code}')" style="font-size:11px;padding:4px 10px;border-radius:6px;border:1px solid rgba(99,102,241,0.4);background:rgba(99,102,241,0.12);color:#a5b4fc;cursor:pointer">🕘 9:35 资金复核（个股主力 vs 板块方向）</button>
+          <span id="open35_${code}" style="font-size:11px;color:#64748b;margin-left:8px"></span>
         </div>
         <div style="padding:10px 12px;background:rgba(245,197,66,0.05);border-top:1px solid #1e2536"><div style="font-size:10px;color:#f5c542;font-weight:700;margin-bottom:4px">⚡ 执行指令</div><div style="font-size:12px;line-height:1.6;color:#e4e7ed">${data.instruction || '等待9:25竞价数据...'}</div></div>
       </div>`;
   });
   list.innerHTML = html;
+}
+
+/* 9:35 开盘5分钟资金复核：个股主力净流出超昨日净流入20%→红灯
+ * 昨日净流入接口不可得，用「个股实时主力方向 × 板块资金方向」双确认近似：
+ * 个股流出+板块流出→红灯；个股流出+板块流入→黄灯；个股流入+板块流入→绿灯 */
+async function checkOpen35(code){
+  const box = $('#open35_' + code);
+  if (!box) return;
+  box.innerHTML = '<span style="color:#a5b4fc">复核中…</span>';
+  try {
+    await fetchSectorFundFlow();
+    const sf_stock = await fetchStockFundFlow(code);
+    /* 所属板块 */
+    let sector = '';
+    (state.near3 || []).forEach(p => p.forEach(s => { if (s.code === code) sector = s.hybk || sector; }));
+    if (!sector) (state.ztPool || []).forEach(s => { if (s.code === code) sector = s.hybk || sector; });
+    const sfm = sector ? matchSectorFund(sector) : null;
+    const stockIn = sf_stock && sf_stock.mainInflow != null ? sf_stock.mainInflow : null;
+    const secIn = sfm && sfm.mainInflow != null ? sfm.mainInflow : null;
+    if (stockIn == null || secIn == null){
+      box.innerHTML = '<span style="color:#fbbf24">实时资金暂不可得（非交易时段或接口限流），盘中9:35再点</span>';
+      return;
+    }
+    const stockTxt = (stockIn >= 0 ? '+' : '') + fmtWan(stockIn);
+    const secTxt = (secIn >= 0 ? '+' : '') + fmtWan(secIn);
+    if (stockIn < 0 && secIn < 0){
+      box.innerHTML = '<span style="color:#f87171;font-weight:700">🔴 红灯：个股主力流出 ' + stockTxt + '，板块资金也流出 ' + secTxt + '，开盘5分钟资金双双背离，无条件放弃</span>';
+    } else if (stockIn < 0 && secIn > 0){
+      box.innerHTML = '<span style="color:#fbbf24">🟡 黄灯：个股主力流出 ' + stockTxt + '，但板块资金流入 ' + secTxt + '，个股被板块抛弃，警惕冲高回落，不追</span>';
+    } else if (stockIn > 0 && secIn > 0){
+      box.innerHTML = '<span style="color:#4ade80;font-weight:700">🟢 绿灯：个股主力流入 ' + stockTxt + ' + 板块资金流入 ' + secTxt + '，资金共振，按执行指令出手</span>';
+    } else {
+      box.innerHTML = '<span style="color:#fbbf24">🟡 个股主力流入 ' + stockTxt + '，但板块资金流出 ' + secTxt + '，孤狼走势，仅轻仓试错或放弃</span>';
+    }
+  } catch (e) {
+    box.innerHTML = '<span style="color:#f87171">复核失败：' + esc(e.message || String(e)) + '</span>';
+  }
 }
 
 function updateAuctionCountdown(){
@@ -4767,8 +5566,8 @@ function updateAuctionCountdown(){
     ce.textContent = '00:00'; ce.style.color = '#f87171'; le.textContent = '已开盘'; su.textContent = '竞价窗口已结束，数据已锁定，请按执行指令操作';
     se.textContent = '已开盘'; se.style.cssText = 'font-size:11px;padding:3px 8px;border-radius:4px;font-weight:600;background:rgba(248,113,113,0.2);color:#f87171';
     stopAuctionAutoRefresh();
-    /* 9:30自动锁定竞价数据 */
-    if (!AUCTION_STATE.auctionLocked) {
+    /* 9:30 自动锁定竞价数据（留 15 秒让最后一轮请求写入完成） */
+    if (cs >= mo + 15 && !AUCTION_STATE.auctionLocked) {
       AUCTION_STATE.auctionLocked = true;
       AUCTION_STATE.auctionLockTime = now.toTimeString().slice(0, 8);
       updateAuctionRefreshButton();
@@ -4785,8 +5584,19 @@ function updateAuctionCountdown(){
 
 function startAuctionAutoRefresh(){
   if (AUCTION_STATE.refreshTimer) return;
+  /* 9:25 窗口：候选为空时自动筛选昨日首板，无需手动点击 */
   if (AUCTION_STATE.candidates.length) fetchAuctionData();
-  AUCTION_STATE.refreshTimer = setInterval(() => { if (AUCTION_STATE.candidates.length) fetchAuctionData(); }, 3000);
+  else if (!AUCTION_STATE.autoScanDone){
+    AUCTION_STATE.autoScanDone = true;
+    scanYesterdayFirstBoards();
+  }
+  AUCTION_STATE.refreshTimer = setInterval(() => {
+    if (AUCTION_STATE.candidates.length) fetchAuctionData();
+    else if (!AUCTION_STATE.autoScanDone){
+      AUCTION_STATE.autoScanDone = true;
+      scanYesterdayFirstBoards();
+    }
+  }, 3000);
 }
 
 function stopAuctionAutoRefresh(){
@@ -4808,9 +5618,599 @@ function initAuction(){
     }
   }
   AUCTION_STATE.countdownTimer = setInterval(updateAuctionCountdown, 1000);
+  /* 手机切后台再回来：若仍在竞价窗口且未锁定，立即补抓（iOS 后台会暂停定时器） */
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState !== 'visible') return;
+    const now = new Date(), cs = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
+    if (cs >= 9 * 3600 + 25 * 60 && cs < 9 * 3600 + 30 * 60 && !AUCTION_STATE.auctionLocked){
+      if (AUCTION_STATE.candidates.length) fetchAuctionData();
+      else if (!AUCTION_STATE.autoScanDone){
+        AUCTION_STATE.autoScanDone = true;
+        scanYesterdayFirstBoards();
+      }
+    }
+  });
   $('#auctionScan').addEventListener('click', scanYesterdayFirstBoards);
   $('#auctionRefresh').addEventListener('click', fetchAuctionData);
+  /* 标的类型切换：从完整候选池按类型过滤重渲染 */
+  const typeSel = $('#auctionType');
+  if (typeSel) typeSel.addEventListener('change', () => {
+    const t = typeSel.value;
+    const base = AUCTION_STATE.allCandidates.length ? AUCTION_STATE.allCandidates : AUCTION_STATE.candidates;
+    const filtered = base.filter(s => t === 'all' || s.type === t).slice(0, 15);
+    AUCTION_STATE.candidates = filtered;
+    $('#cntAuction').textContent = filtered.length;
+    renderAuctionList();
+  });
   if (!loaded) $('#cntAuction').textContent = '0';
+}
+
+/* ============================================================
+ * 反量化交易策略
+ * ============================================================ */
+const ANTIQ_STATE = {
+  running: false,
+  mode: 'low',
+  marketMap: null,
+  genes: null,
+  ztPool: null
+};
+
+/* 最近N日涨停基因（复用起爆前夜的逻辑） */
+async function antiqLoadGenes(days){
+  const start = new Date(state.date);
+  const tries = [];
+  for (let i = 0; i <= days + 6 && tries.length < days + 6; i++){
+    tries.push(ymd(addDays(start, -i)));
+  }
+  const got = await pMapLimit(tries, 4, async ds => {
+    try { const p = await loadZTPool(ds); return { ds, p }; }
+    catch (e) { return null; }
+  });
+  const genes = new Map();
+  got.forEach(g => {
+    if (!g || !g.p || !g.p.length) return;
+    g.p.forEach(s => {
+      const old = genes.get(s.code);
+      const date = g.ds;
+      if (!old || old.date < date) genes.set(s.code, { code: s.code, name: s.n || '', date, lbc: s.lbc || 1, hybk: s.hybk || '' });
+    });
+  });
+  return genes;
+}
+
+/* 加载全市场行情 */
+async function antiqLoadMarket(){
+  const total = 6000, pageSize = 100;
+  const pages = Array.from({ length: Math.ceil(total / pageSize) }, (_, i) => i + 1);
+  const got = await pMapLimit(pages, 8, async p => {
+    const url = `${API.clist}?pn=${p}&pz=${pageSize}&po=1&np=1&fltt=2&invt=2&fid=f12&fs=${BOOM_FS}&fields=f2,f3,f5,f6,f8,f10,f12,f14,f21`;
+    try { const j = await fetchCors(url); return (j && j.data && j.data.diff) || []; }
+    catch (e) { return []; }
+  });
+  const map = new Map();
+  got.flat().forEach(it => {
+    if (!it || !it.f12) return;
+    const code = String(it.f12);
+    if (map.has(code)) return;
+    map.set(code, {
+      code, name: String(it.f14 || ''), price: it.f2 != null ? +it.f2 : 0,
+      zdp: it.f3 != null ? +it.f3 : null, vol: it.f5 || 0, amount: it.f6 || 0,
+      turnover: it.f8 != null ? +it.f8 : 0, volRatio: it.f10 != null ? +it.f10 : 0,
+      ltsz: it.f21 || 0
+    });
+  });
+  return map;
+}
+
+/* 拉取60日K线并计算指标 */
+async function antiqFetchKline(code){
+  const symbol = boomSecid(code);
+  const url = `${API.kline}?param=${symbol},day,,,60,qfq`;
+  try {
+    const r = await fetch(url);
+    const data = await r.json();
+    const kd = (data && data.data && data.data[symbol]) || {};
+    const rows = kd.qfqday || kd.day || [];
+    if (!rows.length) return null;
+    /* 腾讯接口价格字段为字符串，统一转数字；行格式 [date, open, close, high, low, volume] */
+    const num = v => parseFloat(v) || 0;
+    const opens = rows.map(r => num(r[1]));
+    const closes = rows.map(r => num(r[2]));
+    const highs = rows.map(r => num(r[3]));
+    const lows = rows.map(r => num(r[4]));
+    const vols = rows.map(r => num(r[5]));
+    const ma = n => {
+      if (closes.length < n) return null;
+      const s = closes.slice(-n).reduce((a, b) => a + b, 0) / n;
+      return s;
+    };
+    const ma5 = ma(5), ma10 = ma(10), ma20 = ma(20);
+    /* 近5日平均量 vs 之前20日平均量（缩量检测） */
+    const recent5 = vols.slice(-5).reduce((a, b) => a + b, 0) / 5;
+    const prev20 = vols.slice(-25, -5).reduce((a, b) => a + b, 0) / 20;
+    const volShrink = prev20 > 0 ? recent5 / prev20 : 1;
+    /* 涨停日最低点：找最近一次涨幅≥9%的日子 */
+    let ztLow = null, ztDate = null;
+    for (let i = rows.length - 1; i >= 0; i--) {
+      const prevClose = i > 0 ? closes[i - 1] : opens[i];
+      if (prevClose > 0 && (closes[i] - prevClose) / prevClose >= 0.09) {
+        ztLow = lows[i];
+        ztDate = rows[i][0];
+        break;
+      }
+    }
+    /* 回调：涨停日后的最低点 */
+    let pullbackLow = null, pullbackDays = 0;
+    if (ztDate) {
+      const ztIdx = rows.findIndex(r => r[0] === ztDate);
+      if (ztIdx >= 0) {
+        for (let i = ztIdx + 1; i < rows.length; i++) {
+          if (lows[i] < pullbackLow || pullbackLow === null) pullbackLow = lows[i];
+          pullbackDays++;
+        }
+      }
+    }
+    const lastClose = closes[closes.length - 1];
+    const lastOpen = opens[opens.length - 1];
+    const lastLow = lows[lows.length - 1];
+    /* 最近两根阳线缩量检查 */
+    let shrinkOk = false;
+    if (rows.length >= 3) {
+      const v1 = vols[vols.length - 1], v2 = vols[vols.length - 2];
+      const vBase = vols.slice(-8, -2).reduce((a, b) => a + b, 0) / 6;
+      if (vBase > 0) {
+        const r1 = v1 / vBase, r2 = v2 / vBase;
+        shrinkOk = (r1 < 0.7 && r2 < 0.7) && closes[closes.length - 1] > opens[opens.length - 1] && closes[closes.length - 2] > opens[opens.length - 2];
+      }
+    }
+    /* 回调不破涨停日最低点 */
+    const holdLow = ztLow !== null && (pullbackLow === null || pullbackLow >= ztLow * 0.97);
+    return {
+      ma5, ma10, ma20, volShrink, ztLow, pullbackLow, holdLow, shrinkOk,
+      lastClose, lastOpen, lastLow,
+      maBull: ma5 !== null && ma10 !== null && ma20 !== null && ma5 > ma10 && ma10 > ma20,
+      nearMa10: ma10 !== null ? Math.abs(lastClose - ma10) / ma10 : null
+    };
+  } catch (e) { return null; }
+}
+
+/* 量化情绪监测：基于中小盘股换手/波动评估量化参与度 */
+function antiqQuantMonitor(marketMap){
+  if (!marketMap || !marketMap.size) return null;
+  let small = 0, smallHighTurn = 0, total = 0;
+  marketMap.forEach(m => {
+    if (m.ltsz > 0 && m.ltsz < 200e8 && m.ltsz > 10e8) {
+      small++;
+      total++;
+      if (m.turnover > 8 || m.volRatio > 2.5) smallHighTurn++;
+    }
+  });
+  const pct = total > 0 ? (smallHighTurn / total) * 100 : 0;
+  let level, pos, desc;
+  if (pct >= 50) {
+    level = 'high', pos = '≤20%', desc = '量化主导，谨慎追高。只做低吸，仓位控制在20%以内，放弃打板与追涨。';
+  } else if (pct >= 35) {
+    level = 'mid', pos = '20-40%', desc = '量化参与度中等。可适度操作，但避免追高，优先低吸反量化标的。';
+  } else {
+    level = 'low', pos = '40-60%', desc = '量化参与度较低，市场更偏向人主导。可正常操作，但依然遵守低吸纪律。';
+  }
+  return { pct, level, pos, desc, small, smallHighTurn };
+}
+
+/* 反量化低吸战法：扫描 */
+async function antiqScanLow(){
+  const genes = await antiqLoadGenes(15);
+  ANTIQ_STATE.genes = genes;
+  const marketMap = await antiqLoadMarket();
+  ANTIQ_STATE.marketMap = marketMap;
+  const monitor = antiqQuantMonitor(marketMap);
+  /* 从涨停基因中筛选市值适中（20-200亿，避开量化微盘和超大权重）的候选 */
+  const codes = [];
+  genes.forEach((g, code) => {
+    const m = marketMap.get(code);
+    if (m && m.ltsz >= 20e8 && m.ltsz <= 200e8) codes.push({ code, gene: g, m });
+  });
+  const results = await pMapLimit(codes.slice(0, 120), 8, async ({ code, gene, m }) => {
+    const k = await antiqFetchKline(code);
+    if (!k) return null;
+    /* 条件1：回调不破涨停日最低点 */
+    if (!k.holdLow) return null;
+    /* 条件2：两根缩量30%以上企稳小阳线 */
+    if (!k.shrinkOk) return null;
+    /* 条件3：趋势未破坏（收盘不低于10日线太多） */
+    if (k.ma10 && k.lastClose < k.ma10 * 0.93) return null;
+    return {
+      code, name: gene.name, sector: gene.hybk || '', ltsz: m.ltsz, price: m.price,
+      zdp: m.zdp, turnover: m.turnover, volRatio: m.volRatio,
+      ma5: k.ma5, ma10: k.ma10, ma20: k.ma20,
+      volShrink: k.volShrink, shrinkOk: k.shrinkOk, holdLow: k.holdLow,
+      nearMa10: k.nearMa10, lastClose: k.lastClose
+    };
+  });
+  return { results: results.filter(Boolean), monitor, genesCount: genes.size };
+}
+
+/* 反量化选股：市值>200亿龙头+回踩10日线 */
+async function antiqScanStock(){
+  const marketMap = await antiqLoadMarket();
+  ANTIQ_STATE.marketMap = marketMap;
+  const monitor = antiqQuantMonitor(marketMap);
+  /* 筛选市值>200亿、涨幅温和、流动性好的龙头 */
+  const codes = [];
+  marketMap.forEach((m, code) => {
+    if (m.ltsz >= 200e8 && m.amount >= 10e8 && m.zdp !== null && m.zdp >= -3 && m.zdp <= 3) {
+      codes.push({ code, m });
+    }
+  });
+  const results = await pMapLimit(codes.slice(0, 80), 8, async ({ code, m }) => {
+    const k = await antiqFetchKline(code);
+    if (!k) return null;
+    /* 回踩10日线附近（偏离≤3%）且缩量企稳 */
+    if (k.nearMa10 === null || k.nearMa10 > 0.03) return null;
+    if (k.volShrink > 0.8) return null;
+    return {
+      code, name: m.name, sector: '', ltsz: m.ltsz, price: m.price,
+      zdp: m.zdp, turnover: m.turnover, volRatio: m.volRatio,
+      ma5: k.ma5, ma10: k.ma10, ma20: k.ma20,
+      volShrink: k.volShrink, nearMa10: k.nearMa10, lastClose: k.lastClose,
+      maBull: k.maBull || false
+    };
+  });
+  return { results: results.filter(Boolean), monitor, genesCount: 0 };
+}
+
+function antiqRender(results, monitor, mode, genesCount){
+  const list = $('#antiqList'), empty = $('#antiqEmpty');
+  if (!results.length) {
+    list.innerHTML = '';
+    empty.style.display = 'block';
+    empty.innerHTML = `<div style="font-size:40px;margin-bottom:12px">📭</div><div style="font-size:14px;margin-bottom:4px">暂无符合条件的标的</div><div style="font-size:12px">${mode === 'low' ? '可放宽"市值20-200亿"范围，或等更多涨停基因标的出现回调' : '可放宽"市值>200亿/偏离10日线≤3%"条件'}</div>`;
+    return;
+  }
+  empty.style.display = 'none';
+  let html = `<div style="margin-bottom:10px;font-size:11px;color:#94a3b8;padding:8px 12px;background:rgba(0,0,0,0.2);border-radius:6px">共 ${results.length} 只候选 | ${mode === 'low' ? `近15日涨停基因 ${genesCount} 只` : '大市值龙头池'}</div>`;
+  results.forEach(r => {
+    const mc = (r.ltsz / 1e8).toFixed(0);
+    const near = r.nearMa10 !== null ? r.nearMa10 * 100 : null;
+    const shrink = r.volShrink !== null ? r.volShrink * 100 : null;
+    html += `
+      <div style="background:#131826;border:1px solid #1e2536;border-left:4px solid ${mode === 'low' ? '#f5c542' : '#8bc8ea'};border-radius:10px;margin-bottom:10px;overflow:hidden">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:rgba(255,255,255,0.02);border-bottom:1px solid #1e2536">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+            <span style="font-size:15px;font-weight:700;color:#e4e7ed">${esc(r.name)}</span>
+            <span style="font-size:11px;color:#64748b">${r.code}</span>
+            ${r.sector ? `<span style="font-size:10px;padding:2px 6px;border-radius:3px;font-weight:600;background:rgba(245,197,66,0.15);color:#f5c542">${esc(r.sector)}</span>` : ''}
+            <span style="font-size:10px;padding:2px 6px;border-radius:3px;font-weight:600;background:rgba(100,116,139,0.2);color:#94a3b8">${mc}亿</span>
+          </div>
+          <span style="font-size:12px;font-weight:700;color:${r.zdp >= 0 ? '#f87171' : '#4ade80'}">${r.zdp >= 0 ? '+' : ''}${(r.zdp || 0).toFixed(2)}%</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:#1e2536">
+          <div style="background:#131826;padding:8px 12px"><div style="font-size:10px;color:#64748b;margin-bottom:2px">现价</div><div style="font-size:13px;font-weight:600;color:#e4e7ed;font-family:'SF Mono',Monaco,Consolas,monospace">${(r.price || 0).toFixed(2)}</div></div>
+          <div style="background:#131826;padding:8px 12px"><div style="font-size:10px;color:#64748b;margin-bottom:2px">10日线</div><div style="font-size:13px;font-weight:600;color:#e4e7ed;font-family:'SF Mono',Monaco,Consolas,monospace">${r.ma10 ? r.ma10.toFixed(2) : '—'}</div></div>
+          <div style="background:#131826;padding:8px 12px"><div style="font-size:10px;color:#64748b;margin-bottom:2px">偏离10日线</div><div style="font-size:13px;font-weight:600;color:${near !== null && near <= 3 ? '#4ade80' : '#e4e7ed'};font-family:'SF Mono',Monaco,Consolas,monospace">${near !== null ? (near >= 0 ? '+' : '') + near.toFixed(2) + '%' : '—'}</div></div>
+          <div style="background:#131826;padding:8px 12px"><div style="font-size:10px;color:#64748b;margin-bottom:2px">量能萎缩</div><div style="font-size:13px;font-weight:600;color:${shrink !== null && shrink <= 70 ? '#4ade80' : '#e4e7ed'};font-family:'SF Mono',Monaco,Consolas,monospace">${shrink !== null ? shrink.toFixed(0) + '%' : '—'}</div></div>
+          <div style="background:#131826;padding:8px 12px"><div style="font-size:10px;color:#64748b;margin-bottom:2px">换手率</div><div style="font-size:13px;font-weight:600;color:#e4e7ed;font-family:'SF Mono',Monaco,Consolas,monospace">${r.turnover ? r.turnover.toFixed(1) + '%' : '—'}</div></div>
+          <div style="background:#131826;padding:8px 12px"><div style="font-size:10px;color:#64748b;margin-bottom:2px">量比</div><div style="font-size:13px;font-weight:600;color:#e4e7ed;font-family:'SF Mono',Monaco,Consolas,monospace">${r.volRatio ? r.volRatio.toFixed(1) : '—'}</div></div>
+        </div>
+        <div style="padding:10px 12px;background:rgba(245,197,66,0.05);border-top:1px solid #1e2536">
+          <div style="font-size:10px;color:#f5c542;font-weight:700;margin-bottom:4px">💡 反量化策略</div>
+          <div style="font-size:12px;line-height:1.6;color:#e4e7ed">${mode === 'low'
+            ? `有涨停基因，回调未破涨停日低点（缩量${shrink !== null ? shrink.toFixed(0) : '—'}% + 企稳小阳线），符合低吸条件。不追冲高，等回调至${r.ma10 ? '10日线' + r.ma10.toFixed(2) : '关键均线'}附近分批低吸，次日收盘前确认企稳再介入。止损：跌破涨停日最低点或10日线-7%无条件离场。`
+            : `大市值龙头（${mc}亿），回踩10日线（${r.ma10 ? r.ma10.toFixed(2) : '—'}）附近缩量企稳，符合反量化低吸买点。分批建仓，持有至冲高远离5日线时减仓兑现，跌破10日线止损离场。`}</div>
+        </div>
+      </div>`;
+  });
+  list.innerHTML = html;
+}
+
+function antiqRenderMonitor(monitor){
+  if (!monitor) return;
+  const statusEl = $('#antiqQtyStatus'), pctEl = $('#antiqQtyPct'), posEl = $('#antiqQtyPos'), descEl = $('#antiqQtyDesc');
+  const color = monitor.level === 'high' ? '#f87171' : monitor.level === 'mid' ? '#fbbf24' : '#4ade80';
+  const label = monitor.level === 'high' ? '🔴 量化主导' : monitor.level === 'mid' ? '🟡 量化偏多' : '🟢 人主导';
+  statusEl.textContent = label;
+  statusEl.style.cssText = `font-size:11px;padding:3px 8px;border-radius:4px;font-weight:600;background:rgba(0,0,0,0.2);color:${color}`;
+  pctEl.textContent = monitor.pct.toFixed(1) + '%';
+  pctEl.style.color = color;
+  posEl.textContent = monitor.pos;
+  posEl.style.color = color;
+  descEl.textContent = monitor.desc;
+}
+
+async function runAntiq(){
+  if (ANTIQ_STATE.running) return;
+  ANTIQ_STATE.running = true;
+  $('#antiqUpdateTime').textContent = '正在扫描...';
+  $('#antiqEmpty').style.display = 'none';
+  $('#antiqList').innerHTML = '<div style="text-align:center;padding:30px;color:#94a3b8"><div class="spinner" style="margin:0 auto 10px"></div>正在扫描全市场，计算K线指标...</div>';
+  try {
+    const mode = ANTIQ_STATE.mode;
+    const result = mode === 'low' ? await antiqScanLow() : await antiqScanStock();
+    antiqRenderMonitor(result.monitor);
+    antiqRender(result.results, result.monitor, mode, result.genesCount);
+    $('#antiqUpdateTime').textContent = '更新于 ' + new Date().toTimeString().slice(0, 8);
+    $('#cntAntiq').textContent = result.results.length;
+  } catch (e) {
+    console.error('反量化扫描失败', e);
+    $('#antiqList').innerHTML = `<div style="text-align:center;padding:30px;color:#f87171">扫描失败：${esc(e.message || String(e))}</div>`;
+    $('#antiqUpdateTime').textContent = '扫描失败';
+  } finally {
+    ANTIQ_STATE.running = false;
+  }
+}
+
+function initAntiq(){
+  document.querySelectorAll('.antiq-mode').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.antiq-mode').forEach(b => { b.classList.remove('on'); b.style.background = 'rgba(0,0,0,0.2)'; b.style.borderColor = '#2a3040'; });
+      btn.classList.add('on');
+      btn.style.background = 'rgba(245,197,66,0.08)';
+      btn.style.borderColor = 'rgba(245,197,66,0.4)';
+      ANTIQ_STATE.mode = btn.dataset.mode;
+      $('#antiqList').innerHTML = '';
+      $('#antiqEmpty').style.display = 'block';
+      $('#antiqEmpty').innerHTML = '<div style="font-size:40px;margin-bottom:12px">🛡️</div><div style="font-size:14px;margin-bottom:4px">点击"运行反量化扫描"</div><div style="font-size:12px">系统将自动分析全市场并给出反量化低吸候选和量化情绪评级</div>';
+    });
+  });
+  $('#antiqRun').addEventListener('click', runAntiq);
+}
+
+/* ============================================================
+ * 尾盘低吸战法（14:30-14:57 扫描窗口）
+ * 数据源：push2delay clist（全市场）/ push2ex 涨停池+跌停池 / 腾讯60日K线
+ * ============================================================ */
+const TS_STATE = { running: false, timer: null, scanned: false };
+
+/* 尾盘低吸专用 K 线统计：均线、近2日缩量、回踩均线距离 */
+async function tsFetchKline(code){
+  const symbol = boomSecid(code);
+  const url = `${API.kline}?param=${symbol},day,,,60,qfq`;
+  try {
+    const j = await fetchCors(url);
+    const kd = (j && j.data && j.data[symbol]) || {};
+    const rows = kd.qfqday || kd.day || [];
+    if (rows.length < 30) return null;
+    const num = v => parseFloat(v) || 0;
+    const closes = rows.map(r => num(r[2]));
+    const lows = rows.map(r => num(r[4]));
+    const vols = rows.map(r => num(r[5]));
+    const ma = n => closes.length >= n ? closes.slice(-n).reduce((a, b) => a + b, 0) / n : null;
+    const ma5 = ma(5), ma10 = ma(10), ma20 = ma(20);
+    const lastClose = closes[closes.length - 1];
+    /* 今日量 vs 昨日量（缩量30%+ 检测） */
+    const vToday = vols[vols.length - 1];
+    const vYest = vols[vols.length - 2] || 0;
+    const shrinkToday = vYest > 0 ? vToday / vYest : null;
+    /* 回踩判定：现价距 MA5/MA10 的距离（取较近者） */
+    let maTouch = '—', maTouchPct = null, maTouchKey = '';
+    if (ma5 && ma10){
+      const d5 = Math.abs(lastClose - ma5) / ma5;
+      const d10 = Math.abs(lastClose - ma10) / ma10;
+      if (d5 <= d10){ maTouchKey = '5日线'; maTouchPct = d5; }
+      else { maTouchKey = '10日线'; maTouchPct = d10; }
+    }
+    return { ma5, ma10, ma20, lastClose, shrinkToday, maTouchKey, maTouchPct };
+  } catch (e){ return null; }
+}
+
+/* 择时检查：返回 {ok, phase, desc, color} */
+function tsCheckTiming(phase, ctx){
+  const zt = ctx.ztCount || 0, dt = ctx.dtCount || 0;
+  const prem = ctx.yestPremium;
+  /* 允许：主升期 / 冰点末期（跌停不再增加、溢价由负转平） */
+  if (phase === 'main') return { ok: true, phase: '主升期', desc: '主升期，可轻仓尾盘低吸核心标的', color: '#4ade80' };
+  if (phase === 'ice' || phase === 'start'){
+    /* 冰点/启动：需跌停家数不再扩大（<15）且溢价不再恶化 */
+    if (dt < 15 && (prem == null || prem > -2)) return { ok: true, phase: phase === 'ice' ? '冰点末期' : '启动期', desc: phase === 'ice' ? '冰点末期，跌停收敛，可极轻仓试错' : '启动期，可轻仓尾盘低吸', color: '#fbbf24' };
+    return { ok: false, phase: phase === 'ice' ? '冰点期' : '启动期', desc: '情绪未企稳，空仓等待，不接飞刀', color: '#f87171' };
+  }
+  /* 高潮期/退潮期：不做 */
+  if (phase === 'climax') return { ok: false, phase: '高潮期', desc: '高潮期次日风险大，只卖不买', color: '#f87171' };
+  return { ok: false, phase: '退潮期', desc: '退潮加速期，停止一切低吸，空仓', color: '#f87171' };
+}
+
+/* 主扫描流程 */
+async function runTailSnipe(){
+  if (TS_STATE.running) return;
+  if (!state.ztPool.length){ alert('请先加载交易日数据'); return; }
+  TS_STATE.running = true;
+  const btn = $('#tsRun');
+  btn.disabled = true;
+  const setSt = t => { $('#tsUpdateTime').textContent = t; };
+  setSt('正在准备数据…');
+  $('#tsEmpty').style.display = 'none';
+  $('#tsTbody').innerHTML = '<tr><td colspan="10" style="text-align:center;padding:30px;color:#94a3b8"><div class="spinner" style="margin:0 auto 10px;width:22px;height:22px"></div>正在扫描尾盘低吸候选…</tr>';
+  try {
+    const dateStr = ymd(state.date);
+
+    /* ① 跌停池 + 情绪判定（复用情绪周期口径） */
+    setSt('加载跌停池…');
+    const dtPool = await loadDTPool(dateStr).catch(() => []);
+    const ztPool = state.ztPool;
+    const maxLb = ztPool.reduce((m, s) => Math.max(m, s.lbc || 0), 0);
+    const ctx = { maxLb, ztCount: ztPool.length, dtCount: dtPool.length, yestPremium: null };
+
+    /* ② 全市场行情（约60页） */
+    setSt('加载全市场行情…');
+    const marketMap = await emoLoadMarket(6, (d, n) => setSt('全市场行情 ' + d + '/' + n + ' 页'));
+
+    /* ②b 板块资金引擎（板块共振） */
+    setSt('加载板块资金流…');
+    await fetchSectorFundFlow().catch(() => {});
+
+    /* ③ 近15日涨停基因 */
+    setSt('加载近15日涨停基因…');
+    const genes = await boomLoadGenes(15, (d, n) => setSt('涨停基因 ' + d + '/' + n));
+
+    /* ④ 主线板块（涨停家数前3） */
+    const secMap = {};
+    ztPool.forEach(s => {
+      const k = s.hybk || '其他';
+      if (!secMap[k]) secMap[k] = { name: k, count: 0, maxLb: 0, stocks: [] };
+      secMap[k].count++;
+      secMap[k].maxLb = Math.max(secMap[k].maxLb, s.lbc || 1);
+      secMap[k].stocks.push(s);
+    });
+    const topSecs = Object.values(secMap).sort((a, b) => b.count - a.count || b.maxLb - a.maxLb).slice(0, 3);
+    const topSecNames = new Set(topSecs.map(s => s.name));
+
+    /* 跌停板块（负反馈检查） */
+    const dtSectors = new Set(dtPool.map(s => s.hybk));
+
+    /* ⑤ 候选：有涨停基因 + 今日下跌（-2%~-9.5%）+ 主线板块 + 非ST + 市值50-200亿 + 换手<25% */
+    setSt('筛选候选股…');
+    const candidates = [];
+    genes.forEach((g, code) => {
+      if (ztPool.some(s => s.code === code)) return; // 今日涨停的不算低吸
+      const m = marketMap.get(code);
+      if (!m) return;
+      if (/ST/i.test(m.name)) return;
+      if (m.zdp == null || m.zdp > -1.5 || m.zdp < -9.5) return; // 温和下跌，非跌停
+      if (!topSecNames.has(g.hybk || '')) return;               // 必须属主线板块前3
+      if (dtSectors.has(g.hybk)) return;                        // 板块无跌停负反馈
+      if (m.ltsz < 50e8 || m.ltsz > 200e8) return;              // 反量化过滤：50-200亿
+      if (m.turnover > 25) return;                              // 回避超高换手
+      candidates.push({ code, gene: g, m });
+    });
+
+    /* ⑥ 逐股K线：缩量回踩均线 */
+    setSt('逐股K线分析…');
+    const got = await pMapLimit(candidates.slice(0, 60), 6, async c => {
+      const k = await tsFetchKline(c.code);
+      if (!k) return null;
+      /* 回踩均线：距5日或10日线 ≤3% */
+      if (k.maTouchPct === null || k.maTouchPct > 0.03) return null;
+      return { ...c, k };
+    }, (d, n) => setSt('K线分析 ' + d + '/' + n));
+
+    const stocks = got.filter(Boolean).map(c => {
+      const m = c.m, k = c.k;
+      /* 板块共振（尾盘低吸核心）：板块资金逆势流入→可低吸；大幅流出→红灯飞刀勿接 */
+      const sf = matchSectorFund(c.gene.hybk || '');
+      const sectorFundOk = sf ? (sf.mainInflow != null && sf.mainInflow > 0) : null; /* null=数据未加载 */
+      const sectorOutflowBig = sf ? (sf.mainInflow != null && sf.mainInflow < -1e7) : false; /* 板块净流出超1000万 */
+      /* 判定：量比<1 且 今日量/昨日量<0.7 → 缩量回踩（绿灯候选） */
+      const shrinkOk = k.shrinkToday !== null && k.shrinkToday < 0.7 && (m.volRatio < 1.2);
+      const nearMaOk = k.maTouchPct !== null && k.maTouchPct <= 0.03;
+      const ltszOk = m.ltsz >= 50e8 && m.ltsz <= 200e8;
+      const turnOk = (m.turnover || 0) <= 25;
+      const sectorOk = topSecNames.has(c.gene.hybk);
+      const pass = shrinkOk && nearMaOk && ltszOk && turnOk && sectorOk && !sectorOutflowBig;
+
+      let verdict, color, action;
+      if (sectorOutflowBig){
+        verdict = '❌ 放弃';
+        color = '#f87171';
+        action = '板块主力净流出 ' + fmtWan(sf.mainInflow) + '，资金大幅离场，飞刀勿接，禁止低吸';
+      } else if (pass){
+        verdict = sectorFundOk ? '✅ 可低吸' : '⚠️ 观察';
+        color = sectorFundOk ? '#4ade80' : '#fbbf24';
+        action = sectorFundOk ? '板块资金逆势流入，个股被错杀，14:40后不创新低轻仓10%试错，次日不反包即走' : '板块资金数据未确认，等待14:50分时企稳再定';
+      } else {
+        const signals = [];
+        if (!shrinkOk) signals.push('量能未缩');
+        if (!nearMaOk) signals.push('偏离均线');
+        if (!sectorOk) signals.push('板块弱');
+        if (sectorFundOk === false) signals.push('板块资金流出');
+        verdict = signals.length >= 2 ? '❌ 放弃' : '⚠️ 观察';
+        color = signals.length >= 2 ? '#f87171' : '#fbbf24';
+        action = signals.length >= 2 ? '板块弱/量价背离，不接飞刀，空仓等待' : '等待分时企稳确认，14:50再定';
+      }
+      return {
+        code: c.code, name: m.name, hybk: c.gene.hybk || '—',
+        zdp: m.zdp, maKey: k.maTouchKey, maPct: k.maTouchPct, volRatio: m.volRatio,
+        turnover: m.turnover, ltsz: m.ltsz, verdict, color, action,
+        sectorFund: sf ? sf.mainInflow : null, sectorFundRatio: sf ? sf.mainRatio : null
+      };
+    });
+
+    /* 排序：绿灯优先 → 跌幅温和 → 缩量明显 */
+    const rank = v => v.verdict.indexOf('✅') === 0 ? 0 : v.verdict.indexOf('⚠️') === 0 ? 1 : 2;
+    stocks.sort((a, b) => rank(a) - rank(b) || a.zdp - b.zdp);
+
+    /* 择时渲染 */
+    const phase = emoDetectPhase({ ...ctx, ztPool, marketMap, near3: state.near3 || [] });
+    const timing = tsCheckTiming(phase.phase, ctx);
+    $('#tsTiming').innerHTML = '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">' +
+      '<span style="font-weight:700;color:' + timing.color + '">' + (timing.ok ? '🟢 可操作' : '🔴 空仓等待') + ' · ' + esc(timing.phase) + '</span>' +
+      '<span style="color:#94a3b8">' + esc(timing.desc) + '</span>' +
+      '<span style="margin-left:auto;font-size:11px;color:#64748b">主线：' + topSecs.map(s => esc(s.name) + ' ' + s.count + '家').join(' / ') + '</span>' +
+      '</div>';
+
+    tsRender(stocks);
+    setSt('更新于 ' + new Date().toTimeString().slice(0, 8));
+    $('#cntTailsnipe').textContent = stocks.filter(s => s.verdict.indexOf('✅') === 0).length;
+  } catch (e){
+    console.error('尾盘低吸扫描失败', e);
+    $('#tsTbody').innerHTML = '<tr><td colspan="10" style="text-align:center;padding:30px;color:#f87171">扫描失败：' + esc(e.message || String(e)) + '</td></tr>';
+    setSt('扫描失败');
+  } finally {
+    TS_STATE.running = false;
+    btn.disabled = false;
+  }
+}
+
+/* 渲染表格 */
+function tsRender(stocks){
+  const tb = $('#tsTbody');
+  const empty = $('#tsEmpty');
+  if (!stocks.length){ tb.innerHTML = ''; empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  tb.innerHTML = stocks.map(s => {
+    const zdpCls = s.zdp < 0 ? 'down' : 'up';
+    const maTxt = s.maKey !== '—' ? s.maKey + (s.maPct !== null ? ' (' + (s.maPct * 100).toFixed(1) + '%)' : '') : '—';
+    return '<tr>' +
+      '<td class="l">' + s.code + '</td>' +
+      '<td class="l name"><b>' + esc(s.name) + '</b></td>' +
+      '<td class="l">' + esc(s.hybk || '—') + (s.sectorFund != null ? '<div style="font-size:10px;color:' + (s.sectorFund > 0 ? 'var(--red)' : 'var(--green)') + '">主力' + (s.sectorFund > 0 ? '+' : '') + fmtWan(s.sectorFund) + '</div>' : '') + '</td>' +
+      '<td class="' + zdpCls + '">' + (s.zdp >= 0 ? '+' : '') + s.zdp.toFixed(2) + '%</td>' +
+      '<td>' + maTxt + '</td>' +
+      '<td>' + (s.volRatio != null ? s.volRatio.toFixed(2) : '—') + '</td>' +
+      '<td>' + (s.turnover != null ? s.turnover.toFixed(1) + '%' : '—') + '</td>' +
+      '<td>' + fmtY(s.ltsz) + '</td>' +
+      '<td><span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;color:' + s.color + ';background:' + s.color + '1a;border:1px solid ' + s.color + '40">' + s.verdict + '</span></td>' +
+      '<td class="l reason" style="max-width:280px">' + esc(s.action) + '</td>' +
+      '</tr>';
+  }).join('');
+}
+
+/* 倒计时：14:30-15:00 窗口 */
+function tsTick(){
+  const el = $('#tsCountdown');
+  if (!el) return;
+  const now = new Date();
+  const h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
+  const isWeekend = now.getDay() === 0 || now.getDay() === 6;
+  if (isWeekend){
+    el.textContent = '非交易日，等待下一个交易日';
+    return;
+  }
+  const cur = h * 60 + m;
+  const open = 9 * 60 + 30, close = 15 * 60;
+  const startWin = 14 * 60 + 30;
+  const secToClose = (close - cur) * 60 - s;
+  if (cur < startWin){
+    /* 早于14:30 */
+    if (cur < open) el.textContent = '距开盘还有 ' + Math.floor((open - cur) * 60 - s) + ' 秒';
+    else el.textContent = '距 14:30 扫描窗口还有 ' + Math.floor((startWin - cur) * 60 - s) + ' 秒';
+  } else if (cur >= close){
+    el.textContent = '已收盘';
+  } else {
+    el.textContent = '距收盘还有 ' + Math.floor(secToClose / 60) + ' 分 ' + (secToClose % 60) + ' 秒';
+    /* 14:30 起自动扫描一次 */
+    if (!TS_STATE.scanned && !TS_STATE.running && state.ztPool && state.ztPool.length){
+      TS_STATE.scanned = true;
+      setTimeout(() => runTailSnipe(), 500);
+    }
+  }
+}
+
+function initTailsnipe(){
+  $('#tsRun').addEventListener('click', runTailSnipe);
+  /* 倒计时每秒刷新 */
+  tsTick();
+  TS_STATE.timer = setInterval(tsTick, 1000);
 }
 
 /* ============================================================
@@ -4829,10 +6229,20 @@ document.addEventListener('DOMContentLoaded', () => {
   $('#rvDemo').addEventListener('click', () => runReview(true));
   $('#valRun').addEventListener('click', runValueFilter);
   $('#valAi').addEventListener('click', runValueAiAnalysis);
+  /* 趋势成长 */
+  $('#trendRun').addEventListener('click', runTrendFilter);
+  $('#trendExplain').addEventListener('click', () => {
+    const box = $('#trendExplainBox');
+    box.style.display = box.style.display === 'none' ? 'block' : 'none';
+  });
   /* 初始化中长线配置宏观赛道 */
   renderValueTracks();
   /* 初始化9:25竞价狙击台 */
   initAuction();
+  /* 初始化反量化策略 */
+  initAntiq();
+  /* 初始化尾盘低吸战法 */
+  initTailsnipe();
   /* 恢复AI复盘配置 */
   const savedKey = localStorage.getItem('rv_api_key');
   const savedUrl = localStorage.getItem('rv_base_url');
@@ -4841,6 +6251,768 @@ document.addEventListener('DOMContentLoaded', () => {
   if (savedUrl) $('#rvBaseUrl').value = savedUrl;
   if (savedModel) $('#rvModel').value = savedModel;
 });
+
+/* ============================================================
+ * 板块资金透视浮窗：点击个股 → 显示所属板块资金/联动/个股资金
+ * ============================================================ */
+(function(){
+  const overlay = document.createElement('div');
+  overlay.id = 'sectorFundPopup';
+  overlay.style.cssText = 'display:none;position:fixed;z-index:9999;inset:0;background:rgba(0,0,0,0.55);justify-content:center;align-items:center;padding:16px;box-sizing:border-box';
+  overlay.innerHTML = '<div style="background:#151a26;border:1px solid #2a3040;border-radius:14px;max-width:420px;width:100%;max-height:80vh;overflow:auto;padding:16px;box-sizing:border-box">' +
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">' +
+      '<div style="font-size:15px;font-weight:700;color:#e4e7ed" id="spfTitle">板块资金透视</div>' +
+      '<span style="cursor:pointer;font-size:18px;color:#64748b;padding:0 4px" id="spfClose">✕</span>' +
+    '</div>' +
+    '<div id="spfBody" style="font-size:12px;color:#94a3b8"></div>' +
+    '<div style="font-size:10px;color:#64748b;margin-top:10px;line-height:1.6">数据源：东财板块资金流接口（主力净流入/板块涨幅/联动走强个股）。板块资金强+个股强→出击；板块资金弱+个股强→放弃（孤狼诱多）。</div>' +
+  '</div>';
+  document.body.appendChild(overlay);
+  $('#spfClose').addEventListener('click', () => { overlay.style.display = 'none'; });
+  overlay.addEventListener('click', e => { if (e.target === overlay) overlay.style.display = 'none'; });
+
+  /* 全局点击：命中股票名称/代码（.stock-chip / .sname / [data-stock] / 表格含6位代码的单元格）弹出 */
+  document.addEventListener('click', async function(e){
+    let el = e.target.closest && (e.target.closest('.stock-chip') || e.target.closest('.sname') || e.target.closest('[data-stock]'));
+    let code = null, name = '';
+    if (el) {
+      code = el.dataset.stock || (el.textContent.match(/\d{6}/) || [''])[0];
+      name = el.dataset.name || el.textContent.replace(/\d{6}/g, '').trim().slice(0, 8);
+    } else if (e.target.closest && e.target.closest('td')) {
+      /* 表格单元格含 6 位代码 + 非纯数字（避免误触发输入框/参数） */
+      const td = e.target.closest('td');
+      const t = td.textContent || '';
+      const m = t.match(/\d{6}/);
+      if (m && !/^\d+$/.test(t.trim()) && !td.closest('input,select,textarea')) {
+        code = m[0];
+        name = t.replace(/\d{6}/g, '').replace(/[+\-%\s|/]/g, '').trim().slice(0, 8);
+      }
+    } else if (e.target.nodeType === 1 && /^\d{6}$/.test((e.target.textContent || '').trim())) {
+      /* 卡片/列表内独立 6 位代码元素（如竞价台卡片） */
+      code = e.target.textContent.trim();
+      let p = e.target.parentElement;
+      for (let i = 0; i < 4 && p; i++) {
+        const nm = (p.textContent || '').replace(/\d{6}/g, '').replace(/[^\u4e00-\u9fa5A-Za-z]/g, '').trim();
+        if (nm && nm.length >= 2 && nm.length <= 8) { name = nm; break; }
+        p = p.parentElement;
+      }
+    }
+    if (!code) return;
+    e.stopPropagation();
+    showSectorFundPopup(code, name);
+  });
+
+  async function showSectorFundPopup(code, name){
+    overlay.style.display = 'flex';
+    $('#spfTitle').textContent = (name || '') + ' ' + code;
+    $('#spfBody').innerHTML = '<div style="text-align:center;padding:20px"><div class="spinner" style="margin:0 auto 10px;width:22px;height:22px"></div>正在拉取板块资金数据…</div>';
+    try {
+      await fetchSectorFundFlow();
+      /* 个股所属板块：涨停池/近3日池匹配 */
+      let sector = '';
+      (state.near3 || []).forEach(p => p.forEach(s => { if (s.code === code) sector = s.hybk || sector; }));
+      if (!sector) (state.ztPool || []).forEach(s => { if (s.code === code) sector = s.hybk || sector; });
+      const sf = sector ? matchSectorFund(sector) : null;
+      let html = '';
+      /* 个股资金 */
+      const sf_stock = await fetchStockFundFlow(code);
+      html += '<div style="background:#131826;border:1px solid #1e2536;border-radius:10px;padding:12px;margin-bottom:10px">';
+      html += '<div style="font-size:11px;color:#64748b;margin-bottom:6px">个股主力资金（实时）</div>';
+      if (sf_stock && sf_stock.mainInflow != null) {
+        html += '<div style="font-size:16px;font-weight:700;color:' + (sf_stock.mainInflow >= 0 ? '#f87171' : '#4ade80') + '">' + (sf_stock.mainInflow >= 0 ? '+' : '') + fmtWan(sf_stock.mainInflow) +
+          '<span style="font-size:10px;color:#64748b;margin-left:6px">主力占比 ' + (sf_stock.mainRatio != null ? sf_stock.mainRatio.toFixed(2) + '%' : '—') + '</span></div>';
+      } else {
+        html += '<div style="color:#64748b">实时资金暂不可得（非交易时段或接口限流）</div>';
+      }
+      html += '</div>';
+      if (sector) {
+        html += '<div style="background:#131826;border:1px solid #1e2536;border-radius:10px;padding:12px;margin-bottom:10px">';
+        html += '<div style="font-size:11px;color:#64748b;margin-bottom:6px">所属板块：' + esc(sector) + '</div>';
+        if (sf) {
+          html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">';
+          html += '<div style="background:rgba(0,0,0,0.2);border-radius:8px;padding:8px"><div style="font-size:10px;color:#64748b">板块主力净流入</div><div style="font-size:14px;font-weight:700;color:' + (sf.mainInflow >= 0 ? '#f87171' : '#4ade80') + '">' + (sf.mainInflow != null ? (sf.mainInflow >= 0 ? '+' : '') + fmtWan(sf.mainInflow) : '—') + '</div></div>';
+          html += '<div style="background:rgba(0,0,0,0.2);border-radius:8px;padding:8px"><div style="font-size:10px;color:#64748b">板块涨幅</div><div style="font-size:14px;font-weight:700;color:' + (sf.change >= 0 ? '#f87171' : '#4ade80') + '">' + (sf.change != null ? (sf.change >= 0 ? '+' : '') + sf.change.toFixed(1) + '%' : '—') + '</div></div>';
+          html += '<div style="background:rgba(0,0,0,0.2);border-radius:8px;padding:8px"><div style="font-size:10px;color:#64748b">上涨/下跌家数</div><div style="font-size:14px;font-weight:700;color:#e4e7ed">' + (sf.upCount != null ? sf.upCount + ' / ' + (sf.downCount != null ? sf.downCount : '—') : '—') + '</div></div>';
+          html += '<div style="background:rgba(0,0,0,0.2);border-radius:8px;padding:8px"><div style="font-size:10px;color:#64748b">领涨股</div><div style="font-size:12px;font-weight:600;color:#e4e7ed">' + esc(sf.leader || '—') + (sf.leaderChange != null ? ' <span style="color:#f87171">' + sf.leaderChange.toFixed(1) + '%</span>' : '') + '</div></div>';
+          html += '</div>';
+          html += '<div style="font-size:10px;color:#94a3b8">板块主力占比 ' + (sf.mainRatio != null ? sf.mainRatio.toFixed(2) + '%' : '—') + '</div>';
+        } else {
+          html += '<div style="color:#fbbf24">未匹配到板块资金数据（板块名映射失败或数据未加载）</div>';
+        }
+        html += '</div>';
+        /* 板块内联动个股 */
+        const r = await checkSectorResonance(sector, code);
+        html += '<div style="background:#131826;border:1px solid ' + (r.pass ? 'rgba(74,222,128,0.4)' : 'rgba(248,113,113,0.4)') + ';border-radius:10px;padding:12px;margin-bottom:10px">';
+        html += '<div style="font-size:11px;color:#64748b;margin-bottom:6px">板块共振判定</div>';
+        html += '<div style="font-size:13px;font-weight:700;color:' + (r.pass ? '#4ade80' : '#f87171') + ';margin-bottom:4px">' + (r.pass ? '🟢 板块共振 · 可出击' : '🔴 孤狼诱多 · 放弃') + '</div>';
+        html += '<div style="font-size:11px;color:#94a3b8">' + esc(r.reason) + '</div>';
+        if (r.peers.length) {
+          html += '<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px">' + r.peers.slice(0, 8).map(p =>
+            '<span style="font-size:10px;padding:3px 8px;border-radius:4px;background:rgba(74,222,128,0.12);color:#4ade80;border:1px solid rgba(74,222,128,0.3)">' + esc(p.name) + ' ' + (p.change != null ? (p.change > 0 ? '+' : '') + p.change.toFixed(1) + '%' : '') + '</span>').join('') + '</div>';
+        }
+        html += '</div>';
+      } else {
+        html += '<div style="background:#131826;border:1px solid #1e2536;border-radius:10px;padding:12px"><div style="color:#fbbf24">未找到该个股所属板块，无法做板块共振判定</div></div>';
+      }
+      $('#spfBody').innerHTML = html;
+    } catch (e) {
+      console.error('板块透视浮窗失败', e);
+      $('#spfBody').innerHTML = '<div style="color:#f87171">板块资金数据拉取失败：' + esc(e.message || String(e)) + '</div>';
+    }
+  }
+})();
+
+/* ============================================================
+ * 龙头实战宝典（六大战法雷达）
+ * 数据源：东财 K线(qfq) / clist 实时 / trends 分时，纯前端计算
+ * 盘后模块：①大庄控盘 ②命门线反转 ③凤还巢 ⑥龙头梯队
+ * 盘中模块：④妖股筹码透视 ⑤情绪龙头分时低吸（含低吸计算器）
+ * 容错：K线数据不足（新股/停牌）直接跳过，不报错崩溃
+ * ============================================================ */
+const BD_STATE = { running: false, ladder: [], watch: {} };
+
+/* 完整K线统计 */
+function bdKlineStats(kl){
+  const closes = kl.map(k => +k[2]), opens = kl.map(k => +k[1]),
+        highs = kl.map(k => +k[3]), lows = kl.map(k => +k[4]),
+        vols = kl.map(k => +k[5]);
+  const cur = closes[closes.length - 1] || 0;
+  const ma = n => { const s = closes.slice(-n); return s.length ? s.reduce((a, b) => a + b, 0) / s.length : 0; };
+  const ma5 = ma(5), ma10 = ma(10), ma20 = ma(20), ma60 = ma(60);
+  const ma5_prev = closes.slice(-6, -1).length >= 5 ? closes.slice(-6, -1).reduce((a, b) => a + b, 0) / 5 : 0;
+  const maV60 = (() => { const s = vols.slice(-60); return s.length ? s.reduce((a, b) => a + b, 0) / s.length : 0; })();
+  /* 历史天量（近250日）与天量日最高价 */
+  let histMaxVol = 0, histMaxIdx = -1, histMaxHigh = 0;
+  for (let i = 0; i < Math.max(0, kl.length - 10); i++){
+    if (vols[i] > histMaxVol){ histMaxVol = vols[i]; histMaxIdx = i; histMaxHigh = highs[i]; }
+  }
+  /* 近10日最大量 */
+  const recent10 = Math.max.apply(null, vols.slice(-10));
+  /* 250日最高/最低 */
+  const h250 = Math.max.apply(null, highs.slice(-250));
+  const l250 = Math.min.apply(null, lows.slice(-250));
+  /* 涨停标记（实体涨停排除一字/T字） */
+  const limitUps = [];
+  for (let i = 0; i < kl.length; i++){
+    const pct = closes[i] > 0 && i > 0 ? (closes[i] / closes[i-1] - 1) * 100 : 0;
+    if (pct >= 9.5 && lows[i] < highs[i]){
+      const isOneWord = (highs[i] - lows[i]) <= (closes[i] * 0.01); /* 一字/T字近似：振幅≤1% */
+      limitUps.push({ i, pct, isOneWord, close: closes[i], open: opens[i], high: highs[i], low: lows[i], vol: vols[i] });
+    }
+  }
+  return { closes, opens, highs, lows, vols, cur, ma5, ma5_prev, ma10, ma20, ma60, maV60, histMaxVol, histMaxHigh, recent10, h250, l250, limitUps };
+}
+
+/* 模块一：大庄控盘 / 越过山丘量 */
+function bdDazhuang(st, c){
+  if (st.closes.length < 130) return null;   /* 上市不足半年，跳过 */
+  if (!(st.recent10 > st.histMaxVol * 1.02)) return null;   /* 越过历史天量 */
+  if (!(st.cur < st.h250 * 0.5)) return null;               /* 历史低位：跌幅>50% */
+  /* 挖坑：近90日最低较250日高点回撤≥45%，且当前价高于坑底15%（坑已挖出并收回） */
+  const seg = st.lows.slice(-90);
+  const pit = Math.min.apply(null, seg);
+  if (!(pit < st.h250 * 0.62)) return null;
+  if (!(st.cur > pit * 1.15)) return null;
+  if (!(c.volRatio > 3)) return null;                        /* 量比>3 */
+  const tianxian = st.histMaxHigh;                            /* 历史天量线 */
+  const buyLow = tianxian * 0.97, buyHigh = tianxian * 1.03; /* ±3% */
+  const stop = buyLow * 0.94;                                /* 下沿-6% */
+  return {
+    tag: 'gold', verdict: '大庄控盘·越过山丘量',
+    buy: '股价触及历史天量线 ±3%（' + fmtPx(buyLow) + '~' + fmtPx(buyHigh) + '）买入',
+    stop: '买入下沿向下 6% 设保护位：' + fmtPx(stop),
+    sell: 'MACD 死叉 或 5日线下穿10日线 → 趋势结束卖出离场',
+    extra: '历史天量线位置 ' + fmtPx(tianxian) + '（最大套牢盘）· 近10日量 ' + fmtWan(st.recent10) + ' / 历史天量 ' + fmtWan(st.histMaxVol)
+  };
+}
+
+/* 模块二：命门线反转 */
+function bdMingmen(st, c){
+  if (st.closes.length < 150) return null;
+  const { closes, ma60 } = st;
+  /* 1. 找出最近一次站上MA60的点，计算此前被压制天数 */
+  let lastAbove = -1;
+  for (let i = closes.length - 1; i >= 0; i--){
+    if (i < 59) break;
+    const m = closes.slice(i - 59, i + 1).reduce((a, b) => a + b, 0) / 60;
+    if (closes[i] > m) { lastAbove = i; break; }
+  }
+  const suppressDays = lastAbove >= 0 ? (closes.length - 1 - lastAbove) : closes.length;
+  if (suppressDays < 60) return null;   /* 压制不足3个月 */
+  /* 2. 突破后累计≥4次非连续涨停 */
+  const after = st.limitUps.filter(u => u.i > lastAbove);
+  const nonConsec = [];
+  for (const u of after){
+    if (!nonConsec.length || u.i - nonConsec[nonConsec.length - 1].i > 1) nonConsec.push(u);
+  }
+  if (nonConsec.length < 4) return null;
+  /* 3. 洗盘跌破60日线和平均成本线 */
+  const breakMa60 = ma60;   /* 当前MA60 */
+  const bandHigh = Math.max.apply(null, st.highs.slice(lastAbove));
+  const avgCost = (breakMa60 + bandHigh) / 2;
+  if (!(st.cur < breakMa60 && st.cur < avgCost)) return null;   /* 已跌破双线 */
+  /* 绿灯买点三条件 */
+  const volToday = st.vols[st.vols.length - 1];
+  const backAbove = st.cur > breakMa60;
+  const volOK = volToday > st.maV60;
+  /* 5日线上穿60日线 或 5日线在60日线上方拐头向上 */
+  const crossUp = (st.ma5_prev <= breakMa60 && st.ma5 > breakMa60) || (st.ma5 > breakMa60 && st.ma5 > st.ma5_prev);
+  return {
+    tag: 'green', verdict: backAbove && volOK && crossUp ? '命门线反转 · 🟢 绿灯买点' : '命门线反转 · 观察（洗盘末端）',
+    buy: backAbove && volOK && crossUp ? '三条件齐备：站上60日线+量>60均量+5日拐头向上 → 低吸介入' : '等待 站上60日线 + 量>60均量 + 5日上穿60日线 三条件齐备再介入',
+    stop: '跌破 60日均线（' + fmtPx(breakMa60) + '）或 平均成本线（' + fmtPx(avgCost) + '）离场',
+    sell: '5日线下穿10日线 → 趋势结束，卖出',
+    extra: '被压制 ' + suppressDays + ' 天 · 突破后非连续涨停 ' + nonConsec.length + ' 次 · 平均成本线 ' + fmtPx(avgCost)
+  };
+}
+
+/* 模块三：凤还巢 */
+function bdFenghuang(st, c){
+  if (st.closes.length < 90) return null;
+  const lu = st.limitUps;
+  if (!lu.length) return null;
+  const last = st.limitUps[st.limitUps.length - 1];   /* 最近一次涨停 */
+  const lastBody = st.closes[last.i] - st.opens[last.i];
+  const solid = !last.isOneWord && lastBody > (st.closes[last.i] * 0.06);  /* 实体涨停 */
+  if (!solid) return null;
+  const daysAfter = st.closes.length - 1 - last.i;
+  /* 金凤凰：涨停后放量洗盘3~5天 + 末端承接阳线 */
+  if (daysAfter >= 3 && daysAfter <= 5){
+    let washVol = false;
+    for (let i = last.i + 1; i < st.closes.length; i++){
+      if (st.vols[i] > last.vol * 0.6) { washVol = true; break; }
+    }
+    const endYang = st.closes[st.closes.length - 1] > st.opens[st.closes.length - 1];
+    if (washVol && endYang && st.cur > last.close){
+      return {
+        tag: 'gold', verdict: '金凤凰 · 凤凰抬着头买阳不买阴',
+        buy: '涨停板上方买阳（现价 ' + fmtPx(st.cur) + ' > 涨停价 ' + fmtPx(last.close) + '），缩量洗盘只买阳线',
+        stop: '保护位：涨停板收盘价 ' + fmtPx(last.close) + '，跌破无条件离场',
+        sell: '次日冲高不涨停即离场；5日线下穿10日线卖出',
+        extra: '涨停 ' + fmtPx(last.close) + ' 后放量洗盘 ' + daysAfter + ' 天 · 末端出承接阳线'
+      };
+    }
+  }
+  /* 双凤还巢：连续两根涨停启动 → 回调5~8天 */
+  if (lu.length >= 2){
+    const b2 = lu[lu.length - 1], b1 = lu[lu.length - 2];
+    if (b2.i - b1.i <= 4){
+      const days2 = st.closes.length - 1 - b2.i;
+      if (days2 >= 5 && days2 <= 8){
+        const b2Half = (b2.high + b2.low) / 2;
+        const b1Half = (b1.high + b1.low) / 2;
+        const endYang = st.closes[st.closes.length - 1] > st.opens[st.closes.length - 1];
+        if (endYang && st.cur <= b2Half * 1.02){
+          return {
+            tag: 'gold', verdict: '双凤还巢 · 买在凤凰要张嘴',
+            buy: '第二根涨停板下 1/2 区域（约 ' + fmtPx(b2Half) + '）强力承接处买入',
+            stop: '保护位：第一根涨停板 1/2 位 ' + fmtPx(b1Half) + '，跌破清仓',
+            sell: '断板即走，不参与首阴',
+            extra: '连续两板（' + fmtPx(b1.close) + '→' + fmtPx(b2.close) + '）后强势回调 ' + days2 + ' 天'
+          };
+        }
+      }
+    }
+  }
+  return null;
+}
+
+/* 模块四：妖股筹码透视（K线量价分布近似筹码） */
+function bdChip(st, c){
+  if (st.closes.length < 120) return null;
+  /* 量价分布：近120日，[低,高] 20档，累加成交量 */
+  const bins = new Map();
+  const klSeg = Math.min(120, st.closes.length);
+  for (let i = klSeg; i > 0; i--){
+    const h = st.highs[st.closes.length - i], l = st.lows[st.closes.length - i], v = st.vols[st.closes.length - i];
+    if (!(h > 0 && l > 0 && v > 0)) continue;
+    const step = (h - l) / 20;
+    for (let j = 0; j <= 20; j++){
+      const px = Math.round((l + step * j) * 100);
+      bins.set(px, (bins.get(px) || 0) + v / 21);
+    }
+  }
+  let tot = 0, above = 0;
+  let peakPx = 0, peakV = 0;
+  bins.forEach((v, px) => {
+    tot += v;
+    if (px > st.cur * 100) above += v;
+    if (v > peakV){ peakV = v; peakPx = px; }
+  });
+  const trapPct = tot ? above / tot * 100 : 50;
+  const peakPrice = peakPx / 100;
+  /* 条件：上方套牢<20% + 密集峰在现价下方附近（峰/现价 ≤1.06 且 ≥0.6） */
+  if (!(trapPct < 20)) return null;
+  if (!(peakPrice <= st.cur * 1.06 && peakPrice >= st.cur * 0.6)) return null;
+  return {
+    tag: 'red', verdict: '筹码低位密集 · 主力吃饱',
+    buy: '突破低位密集峰上沿（约 ' + fmtPx(peakPrice * 1.03) + '）时买入',
+    stop: '跌破密集峰下沿（约 ' + fmtPx(peakPrice * 0.95) + '）止损',
+    sell: '放量滞涨 / 高位换手剧增 减仓',
+    extra: '现价上方套牢筹码仅 ' + trapPct.toFixed(1) + '% · 密集峰中心 ' + fmtPx(peakPrice) + '（低位密集峰，具备成妖潜质；机构重仓筹码发散标的已被过滤）'
+  };
+}
+
+/* 模块六：龙头梯队排版（基于涨停池） */
+function bdLadder(){
+  const zt = state.ztPool || [];
+  if (!zt.length) return null;
+  const byLb = {};
+  zt.forEach(s => { const l = s.lbc || 1; (byLb[l] = byLb[l] || []).push(s); });
+  const maxLb = Math.max.apply(null, Object.keys(byLb).map(Number));
+  const levels = [];
+  for (let l = maxLb; l >= 1; l--){
+    levels.push({ lb: l, list: byLb[l] || [], gap: !byLb[l] });
+  }
+  /* 主线板块：涨停家数最多 */
+  const secMap = {};
+  zt.forEach(s => { const k = s.hybk || '其他'; (secMap[k] = secMap[k] || []).push(s); });
+  const topSec = Object.entries(secMap).sort((a, b) => b[1].length - a[1].length)[0];
+  return { levels, maxLb, topSecName: topSec ? topSec[0] : '', topSecList: topSec ? topSec[1] : [] };
+}
+
+/* ---------- 龙头宝典主扫描 ---------- */
+async function runBaodian(){
+  if (BD_STATE.running) return;
+  if (!state.ztPool.length){ alert('请先加载交易日数据（涨停池）'); return; }
+  BD_STATE.running = true;
+  const btn = $('#bdRun'); if (btn) btn.disabled = true;
+  $('#bdProgress').style.display = 'block';
+  const setBar = (p, t) => { $('#bdBar').style.width = p + '%'; $('#bdStatus2').textContent = t; };
+  try {
+    /* 候选池：涨停池 + 涨停基因（近15日），全市场扫描时用实时行情扩展 */
+    let pool = [];
+    const seen = new Set();
+    (state.ztPool || []).forEach(s => { if (!seen.has(s.code)) { seen.add(s.code); pool.push({ code: s.code, name: s.name, hybk: s.hybk, ltsz: s.ltsz, volRatio: s.hs || 0 }); } });
+    const scanAll = $('#bdScanAll') && $('#bdScanAll').checked;
+    if (scanAll){
+      setBar(3, '拉取全市场行情（约60页）…');
+      const mm = await emoLoadMarket(6, (d, n) => setBar(3 + d / n * 10, '全市场行情 ' + d + '/' + n + ' 页'));
+      mm.forEach((m, code) => {
+        if (seen.has(code)) return;
+        if (/ST/i.test(m.name)) return;
+        if (!(m.volRatio > 2)) return;   /* 预筛量比>2，减小K线拉取量 */
+        seen.add(code);
+        pool.push({ code, name: m.name, hybk: m.hybk || '', ltsz: m.ltsz, volRatio: m.volRatio, market: m });
+      });
+      /* 涨停池个股量比缺失时从行情补 */
+      pool.forEach(p => { if (p.market) p.volRatio = p.market.volRatio || p.volRatio; });
+    }
+    setBar(13, '候选池 ' + pool.length + ' 只，逐股拉取近1年K线（' + Math.min(6, Math.max(2, Math.round(pool.length / 200))) + ' 路并发，约 1-3 分钟）…');
+    const klCache = {};
+    const got = await pMapLimit(pool.slice(0, 400), 6, async c => {
+      let kl = null;
+      for (let i = 0; i < 2; i++){
+        try {
+          const url = API.kline + '?param=' + boomSecid(c.code) + ',day,,,250,qfq';
+          const j = await fetchCors(url);
+          const d = (j && j.data && j.data[boomSecid(c.code)]) || {};
+          kl = d.qfqday || d.day || [];
+          if (kl.length >= 80) break;
+          kl = null;
+        } catch (e){ if (i === 0) await new Promise(r => setTimeout(r, 300)); }
+      }
+      if (!kl) return null;
+      klCache[c.code] = kl;
+      const st = bdKlineStats(kl);
+      return { ...c, kl, st };
+    }, (d, n) => setBar(13 + d / n * 75, 'K线分析 ' + d + '/' + n));
+    const rows = got.filter(Boolean);
+    /* 逐模块判定 */
+    const out1 = [], out2 = [], out3 = [], out4 = [];
+    rows.forEach(r => {
+      const d1 = bdDazhuang(r.st, r);
+      const d2 = bdMingmen(r.st, r);
+      const d3 = bdFenghuang(r.st, r);
+      const d4 = bdChip(r.st, r);
+      if (d1) out1.push({ ...r, v: d1 });
+      if (d2) out2.push({ ...r, v: d2 });
+      if (d3) out3.push({ ...r, v: d3 });
+      if (d4) out4.push({ ...r, v: d4 });
+    });
+    setBar(91, '模块六：龙头梯队排版…');
+    BD_STATE.ladder = bdLadder();
+    setBar(100, '完成');
+    bdRender1(out1); bdRender2(out2); bdRender3(out3); bdRender4(out4);
+    bdRender5(null); bdRender6(BD_STATE.ladder);
+    $('#bdStatus').textContent = '扫描完成：大庄 ' + out1.length + ' · 命门线 ' + out2.length + ' · 凤还巢 ' + out3.length + ' · 筹码透视 ' + out4.length + ' · ' + new Date().toTimeString().slice(0, 8);
+    $('#cntBaodian').textContent = out1.length + out2.length + out3.length + out4.length;
+    setTimeout(() => { $('#bdProgress').style.display = 'none'; }, 1500);
+  } catch (e){
+    console.error('龙头宝典扫描失败', e);
+    $('#bdStatus').textContent = '扫描失败：' + esc(e.message || String(e));
+    setBar(0, '失败');
+  } finally {
+    BD_STATE.running = false;
+    if (btn) btn.disabled = false;
+  }
+}
+
+function bdCardHtml(r){
+  const hy = r.hybk ? '<span class="bd-tag2 gray">' + esc(r.hybk) + '</span>' : '';
+  const tagCls = r.v.tag === 'gold' ? 'bd-tag2 gold' : r.v.tag === 'green' ? 'bd-tag2 green' : r.v.tag === 'red' ? 'bd-tag2 red' : 'bd-tag2 gray';
+  return '<div class="bd-card">' +
+    '<div><span class="bd-name">' + esc(r.name) + '</span> <span class="bd-code">' + r.code + '</span> ' +
+    '<span class="' + tagCls + '">' + esc(r.v.verdict) + '</span> ' + hy + '</div>' +
+    (r.v.extra ? '<div style="color:var(--dim);font-size:10px;margin:3px 0">' + esc(r.v.extra) + '</div>' : '') +
+    '<div class="bd-buy">🔴 买点：' + esc(r.v.buy) + '</div>' +
+    '<div class="bd-stop">🛡️ 止损/保护：' + esc(r.v.stop) + '</div>' +
+    '<div class="bd-sell">💡 卖出：' + esc(r.v.sell) + '</div>' +
+    '</div>';
+}
+function bdRender1(list){ $('#bd1Body').innerHTML = list.length ? list.map(bdCardHtml).join('') : '<div class="bd-empty">暂无符合「越过山丘量」的标的（需：10日量突破1年天量 + 历史低位挖坑 + 量比&gt;3）</div>'; }
+function bdRender2(list){ $('#bd2Body').innerHTML = list.length ? list.map(bdCardHtml).join('') : '<div class="bd-empty">暂无符合「命门线反转」的标的（需：60日线压制≥3个月 + 突破后≥4次非连续涨停 + 洗盘跌破双线）</div>'; }
+function bdRender3(list){ $('#bd3Body').innerHTML = list.length ? list.map(bdCardHtml).join('') : '<div class="bd-empty">暂无符合「凤还巢」的标的（需：实体涨停后放量洗盘末端 + 承接阳线）</div>'; }
+function bdRender4(list){ $('#bd4Body').innerHTML = list.length ? list.map(bdCardHtml).join('') : '<div class="bd-empty">暂无符合「妖股筹码透视」的标的（需：上方无套牢盘 + 低位密集峰）</div>'; }
+function bdRender5(err){
+  const body = $('#bd5Body');
+  if (err){ body.innerHTML = '<div class="bd-empty">' + esc(err) + '</div>'; return; }
+  body.innerHTML = '<div class="bd-empty">分时低吸为盘中实时监控：在行情卡片 / 个股详情页对连板人气龙头自动检测「开盘急跌释放卖压 → V型反转（≥3个底抬高）→ 突破分时均价线」，触发即提示「突破分时均线，出现低吸买点！」。卖出纪律：当日收盘价做保护位，封住涨停持股，次日冲高不涨停即离场。使用上方计算器输入涨停价即可获得低吸参考价（涨停价 × 0.955）。</div>';
+}
+function bdRender6(ladder){
+  const body = $('#bd6Body');
+  if (!ladder){ body.innerHTML = '<div class="bd-empty">暂无梯队数据，请先加载交易日数据</div>'; return; }
+  let html = '<div style="font-size:11px;color:#94a3b8;margin-bottom:8px">主线板块：<b style="color:var(--gold)">' + esc(ladder.topSecName) + '</b>（涨停 ' + ladder.topSecList.length + ' 家） · 最高连板 <b style="color:#f87171">' + ladder.maxLb + ' 板</b></div>';
+  html += '<div class="bd-ladder">';
+  ladder.levels.forEach(lv => {
+    const cls = lv.gap ? 'gap' : (lv.lb === ladder.maxLb ? 'top' : '');
+    html += '<div class="lvl ' + cls + '"><div class="h">' + lv.lb + '板' + (lv.lb === ladder.maxLb ? ' ★龙头' : '') + '</div>' +
+      '<div class="n" style="color:' + (lv.gap ? '#64748b' : (lv.lb === ladder.maxLb ? '#f87171' : '#e4e7ed')) + '">' + lv.list.length + '</div>' +
+      '<div style="font-size:9px;color:var(--dim);line-height:1.5">' + lv.list.slice(0, 3).map(s => esc(s.name)).join('<br>') + (lv.list.length > 3 ? '<br>…' : '') + '</div>' +
+      (lv.gap ? '<div style="font-size:9px;color:#f87171;margin-top:2px">⚠️ 断档</div>' : '') + '</div>';
+  });
+  html += '</div>';
+  /* 梯队股（小弟）选择策略：主线板块内首板，涨幅滞后+低位蓄势 */
+  const smallBro = ladder.topSecList.filter(s => (s.lbc || 1) === 1).slice(0, 5);
+  if (smallBro.length){
+    html += '<div style="margin-top:10px;font-size:11px;color:#94a3b8"><b style="color:var(--gold)">🪜 梯队小弟（龙头买不进时的备选）：</b></div>';
+    html += smallBro.map(s => '<div class="bd-card" style="border-left-color:#60a5fa"><span class="bd-name">' + esc(s.name) + '</span> <span class="bd-code">' + s.code + '</span> <span class="bd-tag2 gray">' + esc(s.hybk || '') + '</span> · 首板 · 与龙头同主线，涨幅相对滞后，技术面蓄势可跟踪</div>').join('');
+  }
+  html += '<div style="margin-top:10px;font-size:10.5px;color:#64748b;line-height:1.6">🚨 移动止盈：持有梯队股期间，若股价自阶段高点向下跌超 5%，自动弹出止盈离场警报（见板块「移动止盈离场警报」）。</div>';
+  body.innerHTML = html;
+}
+
+/* ---------- 绑定 ---------- */
+(function(){
+  const runBtn = $('#bdRun');
+  if (runBtn) runBtn.addEventListener('click', runBaodian);
+  const calBtn = $('#bdCalcBtn'), calcIn = $('#bdCalcPrice'), calcOut = $('#bdCalcOut');
+  if (calBtn) calBtn.addEventListener('click', () => {
+    const p = parseFloat(calcIn.value);
+    if (!(p > 0)) { calcOut.textContent = '请输入有效涨停价'; calcOut.style.color = '#f87171'; return; }
+    const low = p * 0.955, line = low.toFixed(2);
+    calcOut.innerHTML = '低吸参考价 = ' + p.toFixed(2) + ' × 0.955 = <b style="color:#4ade80">' + line + '</b> 元（跌至此位置附近可低吸，涨停价下方画横线参考）';
+    calcOut.style.color = '#4ade80';
+  });
+  /* Tab 切换懒加载模块五说明 */
+  document.addEventListener('click', function onBdTab(e){
+    const t = e.target.closest && e.target.closest('.tab');
+    if (t && t.dataset.view === 'baodian'){ bdRender5(null); if (BD_STATE.ladder && BD_STATE.ladder.levels) bdRender6(BD_STATE.ladder); }
+  });
+  /* 移动止盈监控：自选股（localStorage bd_watch）盘中检查，较阶段高点跌超5%报警 */
+  function bdWatchTick(){
+    const watch = BD_STATE.watch;
+    const codes = Object.keys(watch);
+    if (!codes.length) return;
+    fetchRealtimeQuotes(codes).then(q => {
+      codes.forEach(code => {
+        const w = watch[code], quo = q[code];
+        if (!quo || !quo.price) return;
+        if (!w.high || quo.price > w.high) w.high = quo.price;
+        if (w.high && quo.price < w.high * 0.95){
+          $('#bdMod7').style.display = 'block';
+          const b = $('#bd7Body');
+          b.innerHTML = '<div class="bd-card" style="border-left-color:#f87171"><span class="bd-name">' + esc(w.name) + '</span> <span class="bd-code">' + code + '</span> 🚨 移动止盈警报：现价 ' + quo.price.toFixed(2) + '，自阶段高点 ' + w.high.toFixed(2) + ' 回落超 5%，建议止盈离场</div>' + b.innerHTML;
+          delete watch[code];
+        }
+      });
+    }).catch(() => {});
+  }
+  setInterval(bdWatchTick, 30000);
+  /* 从其他模块点击个股时自动加入监控（可选，量小） */
+  window.addBdWatch = function(code, name){
+    BD_STATE.watch[code] = { name: name || code, high: 0 };
+  };
+})();
+
+/* ============================================================
+ * AI 自进化交易系统（回测仿真 → 绩效评估 → 自动调参）
+ * 纯前端实现：localStorage 持久化参数/交易/绩效/进化日志
+ * ============================================================ */
+const AI_KEY = 'ff_ai_state_v2';
+const AI_DEFAULT_PARAMS = {
+  boomMinScore: 50,   /* 起爆前夜最低评分（收紧↑/放宽↓） */
+  stickyMax: 2.0,     /* 均线粘合度上限 %（收紧↓/放宽↑） */
+  volMin: 1.3,        /* 量比下限（收紧↑） */
+  volMax: 5.0,        /* 量比上限 */
+  emoMin: 35,         /* 情绪周期「主升」得分下限，低于则全市场停手 */
+  takeProfit: 15,     /* 模拟止盈 % */
+  stopLoss: 6,        /* 模拟止损 %（相对买入价） */
+  holdDays: 10        /* 持有上限（交易日） */
+};
+const AI_STATE = {
+  params: { ...AI_DEFAULT_PARAMS },
+  trades: [],        /* 已完成模拟交易 */
+  open: [],          /* 实时仿真持仓 */
+  equity: [],        /* 资金曲线 [ {day, val} ] */
+  log: []            /* 进化日志 */
+};
+(function(){
+  try {
+    const saved = JSON.parse(localStorage.getItem(AI_KEY) || 'null');
+    if (saved){
+      AI_STATE.params = { ...AI_DEFAULT_PARAMS, ...(saved.params || {}) };
+      AI_STATE.trades = saved.trades || [];
+      AI_STATE.open = saved.open || [];
+      AI_STATE.equity = saved.equity || [];
+      AI_STATE.log = saved.log || [];
+    }
+  } catch (e) { /* 损坏则用默认 */ }
+  function saveAI(){ try { localStorage.setItem(AI_KEY, JSON.stringify({ params: AI_STATE.params, trades: AI_STATE.trades, open: AI_STATE.open, equity: AI_STATE.equity, log: AI_STATE.log })); } catch (e) {} }
+
+  /* ---------- 绩效计算 ---------- */
+  function aiPerf(){
+    const t = AI_STATE.trades;
+    const wins = t.filter(x => x.pnl > 0), losses = t.filter(x => x.pnl <= 0);
+    const winRate = t.length ? wins.length / t.length * 100 : 0;
+    const avgWin = wins.length ? wins.reduce((a, b) => a + b.pnl, 0) / wins.length : 0;
+    const avgLoss = losses.length ? Math.abs(losses.reduce((a, b) => a + b.pnl, 0) / losses.length) : 0;
+    const profitFactor = avgLoss > 0 ? avgWin / avgLoss : (avgWin > 0 ? 99 : 0);
+    const totalPnl = t.reduce((a, b) => a + b.pnl, 0);
+    /* 最大回撤（累计%曲线） */
+    let cum = 0, peak = 0, mdd = 0;
+    const curve = [];
+    t.forEach(x => { cum += x.pnl; peak = Math.max(peak, cum); if (peak > 0) mdd = Math.max(mdd, (peak - cum) / peak * 100); curve.push({ i: curve.length + 1, cum }); });
+    return { n: t.length, winRate, avgWin, avgLoss, profitFactor, totalPnl, mdd, curve, last20: t.slice(-20) };
+  }
+
+  /* ---------- AI 自修改（规则驱动调参） ---------- */
+  function aiEvolve(){
+    const p = AI_STATE.params;
+    const last20 = AI_STATE.trades.slice(-20);
+    if (last20.length < 5) return null;
+    const wins = last20.filter(x => x.pnl > 0).length;
+    const rate = wins / last20.length * 100;
+    const avg = last20.reduce((a, b) => a + b.pnl, 0) / last20.length;
+    const changes = [];
+    if (rate < 40){
+      if (p.boomMinScore < 90){ changes.push(['boomMinScore', p.boomMinScore, p.boomMinScore + 5, '胜率' + rate.toFixed(0) + '%<40%，提高最低评分，过滤弱信号']); p.boomMinScore += 5; }
+      if (p.stickyMax > 0.8){ changes.push(['stickyMax', p.stickyMax, +(p.stickyMax - 0.2).toFixed(1), '粘合条件放宽，收紧至更严']); p.stickyMax = +(p.stickyMax - 0.2).toFixed(1); }
+      if (p.volMin < 2.5){ changes.push(['volMin', p.volMin, +(p.volMin + 0.1).toFixed(1), '量比下限提高，只做放量确认']); p.volMin = +(p.volMin + 0.1).toFixed(1); }
+    } else if (rate > 60 && last20.length >= 10){
+      if (p.boomMinScore > 30){ changes.push(['boomMinScore', p.boomMinScore, p.boomMinScore - 3, '胜率' + rate.toFixed(0) + '%，适度放宽，捕捉更多机会']); p.boomMinScore -= 3; }
+      if (p.volMin > 0.8){ changes.push(['volMin', p.volMin, +(p.volMin - 0.05).toFixed(2), '量比下限微降']); p.volMin = +(p.volMin - 0.05).toFixed(2); }
+    }
+    if (avg < -3 && p.stopLoss > 3){
+      changes.push(['stopLoss', p.stopLoss, p.stopLoss - 1, '平均盈亏' + avg.toFixed(1) + '%，缩紧止损']); p.stopLoss -= 1;
+    }
+    if (!changes.length) return null;
+    const rec = { time: new Date().toLocaleString('zh-CN', { hour12: false }), rate: +rate.toFixed(1), avg: +avg.toFixed(2), changes };
+    AI_STATE.log.unshift(rec);
+    AI_STATE.log = AI_STATE.log.slice(0, 30);
+    saveAI();
+    return rec;
+  }
+
+  /* ---------- 单股回放（涨停回踩低吸） ---------- */
+  function aiBacktestOne(code, name, kl){
+    if (!kl || kl.length < 20) return [];
+    const trades = [];
+    const p = AI_STATE.params;
+    const n = kl.length;
+    for (let i = 1; i < n - 1; i++){
+      const prevClose = +kl[i - 1][2];
+      if (!(prevClose > 0)) continue;
+      const ztPct = (+kl[i][2] / prevClose - 1) * 100;
+      if (ztPct < 9.5) continue;                    /* 涨停日 */
+      const ztLow = +kl[i][4], ztVol = +kl[i][5];
+      if (!(ztLow > 0 && ztVol > 0)) continue;
+      /* 涨停后1~4日内：回调不破涨停日最低 + 缩量（<60%涨停量） */
+      for (let d = 1; d <= 4 && i + d < n; d++){
+        const low = +kl[i + d][4], vol = +kl[i + d][5];
+        if (low >= ztLow && vol < ztVol * 0.6 && +kl[i + d][2] < +kl[i][2]){
+          const buyIdx = i + d + 1;
+          if (buyIdx >= n) break;
+          const buyPrice = +kl[buyIdx][1];          /* 信号次日开盘买入 */
+          if (!(buyPrice > 0)) break;
+          const stop = ztLow;                       /* 保护位：涨停日最低价 */
+          const target = buyPrice * (1 + p.takeProfit / 100);
+          let sellPrice = 0, sellIdx = 0, reason = '超时';
+          for (let j = buyIdx; j < n && j <= buyIdx + p.holdDays; j++){
+            const l = +kl[j][4], h = +kl[j][3];
+            if (l <= stop * 1.01){ sellPrice = stop * 0.995; sellIdx = j; reason = '止损'; break; }
+            if (h >= target){ sellPrice = target; sellIdx = j; reason = '止盈'; break; }
+            sellPrice = +kl[j][2]; sellIdx = j;
+          }
+          if (sellPrice > 0){
+            const pnl = (sellPrice / buyPrice - 1) * 100;
+            trades.push({ code, name, signal: kl[i][0], buy: kl[buyIdx][0], buyPrice: +buyPrice.toFixed(2), sell: kl[sellIdx][0], sellPrice: +sellPrice.toFixed(2), hold: sellIdx - buyIdx + 1, pnl: +pnl.toFixed(2), result: reason });
+          }
+          i = buyIdx - 1;                           /* 跳过重叠区间 */
+          break;
+        }
+      }
+    }
+    return trades;
+  }
+
+  /* ---------- 主回测 ---------- */
+  async function aiRunBacktest(){
+    const btn = $('#aiRunBacktest'); if (btn) btn.disabled = true;
+    $('#aiProgress').style.display = 'block';
+    const setBar = (p, t) => { $('#aiBar').style.width = p + '%'; $('#aiStatus2').textContent = t; };
+    try {
+      setBar(2, '构建候选池（近15日涨停基因）…');
+      const genes = await boomLoadGenes(15);
+      const pool = Array.from(genes.values()).slice(0, 300);
+      if (!pool.length){ $('#aiStatus').textContent = '无候选池，请先加载交易日数据'; return; }
+      setBar(8, '候选 ' + pool.length + ' 只，逐股回放60日K线（6路并发）…');
+      const got = await pMapLimit(pool, 6, async g => {
+        let kl = null;
+        for (let i = 0; i < 2; i++){
+          try {
+            const url = API.kline + '?param=' + boomSecid(g.code) + ',day,,,60,qfq';
+            const j = await fetchCors(url);
+            const d = (j && j.data && j.data[boomSecid(g.code)]) || {};
+            kl = d.qfqday || d.day || [];
+            if (kl.length >= 20) break;
+            kl = null;
+          } catch (e){ if (i === 0) await new Promise(r => setTimeout(r, 300)); }
+        }
+        return kl ? aiBacktestOne(g.code, g.name, kl) : [];
+      }, (d, n) => setBar(8 + d / n * 80, '回放 ' + d + '/' + n));
+      const all = got.flat();
+      AI_STATE.trades = AI_STATE.trades.concat(all).slice(-200);
+      const perf = aiPerf();
+      AI_STATE.equity = perf.curve;
+      const evolve = aiEvolve();
+      saveAI();
+      aiRenderAll(evolve);
+      $('#aiStatus').textContent = '回测完成：' + all.length + ' 笔模拟交易 · 胜率 ' + perf.winRate.toFixed(1) + '%' + (evolve ? ' · 🤖 AI 已自动调参' : '');
+      $('#cntAiEngine').textContent = AI_STATE.trades.length;
+      setTimeout(() => { $('#aiProgress').style.display = 'none'; }, 1000);
+    } catch (e){
+      console.error('AI回测失败', e);
+      $('#aiStatus').textContent = '回测失败：' + esc(e.message || String(e));
+      setBar(0, '失败');
+    } finally {
+      if (btn) btn.disabled = false;
+    }
+  }
+
+  /* ---------- 实时仿真（今日信号 → 模拟持仓） ---------- */
+  async function aiRunLive(){
+    const zt = state.ztPool || [];
+    if (!zt.length){ $('#aiStatus').textContent = '无涨停池数据，请先加载交易日'; return; }
+    /* 今日信号：涨停股中连板≥1且流通市值≤300亿（由AI参数控制出手） */
+    const p = AI_STATE.params;
+    const sig = zt.filter(s => (s.ltsz || 0) <= 300e8 && (s.ltsz || 0) > 0).slice(0, 10);
+    const codeList = sig.map(s => s.code);
+    let quotes = {};
+    try { quotes = await fetchRealtimeQuotes(codeList); } catch (e) {}
+    AI_STATE.open = sig.map(s => {
+      const q = quotes[s.code] || {};
+      return { code: s.code, name: s.name, hybk: s.hybk || '', price: q.price || 0, zdp: q.zdp != null ? q.zdp : 0, date: state.date };
+    });
+    saveAI();
+    aiRender2(true);
+    $('#aiStatus').textContent = '实时仿真更新：今日信号 ' + sig.length + ' 只（受 AI 参数约束）· 情绪得分≥' + p.emoMin + ' 才允许出手';
+  }
+
+  /* ---------- 渲染 ---------- */
+  function aiRender1(){
+    const tb = $('#ai1Tbody'), empty = $('#ai1Empty');
+    const t = AI_STATE.trades;
+    if (!t.length){ if (empty) empty.style.display = ''; if (tb) tb.innerHTML = ''; return; }
+    if (empty) empty.style.display = 'none';
+    tb.innerHTML = t.slice().reverse().slice(0, 60).map(x => {
+      const cls = x.pnl > 0 ? 'var(--red)' : x.pnl < 0 ? 'var(--green)' : 'var(--dim)';
+      const resCls = x.result === '止盈' ? 'bd-tag2 green' : x.result === '止损' ? 'bd-tag2 red' : 'bd-tag2 gray';
+      return '<tr><td>' + esc(x.buy) + '</td><td>' + x.code + ' ' + esc(x.name) + '</td><td>' + esc(x.signal) + '</td>' +
+        '<td>' + x.buyPrice + '</td><td>' + x.sellPrice + '</td><td>' + x.hold + '日</td>' +
+        '<td style="color:' + cls + ';font-weight:700">' + (x.pnl > 0 ? '+' : '') + x.pnl + '%</td>' +
+        '<td><span class="' + resCls + '">' + esc(x.result) + '</span></td></tr>';
+    }).join('');
+  }
+  function aiRender2(isLive){
+    const body = $('#ai2Body');
+    if (isLive){
+      if (!AI_STATE.open.length){ body.innerHTML = '<div class="bd-empty">今日无符合AI参数约束的信号</div>'; return; }
+      body.innerHTML = AI_STATE.open.map(s =>
+        '<div class="bd-card" style="border-left-color:#60a5fa"><span class="bd-name">' + esc(s.name) + '</span> <span class="bd-code">' + s.code + '</span> <span class="bd-tag2 gray">' + esc(s.hybk) + '</span> ' +
+        '现价 <b style="color:' + (s.zdp >= 0 ? 'var(--red)' : 'var(--green)') + '">' + (s.price || '—') + '（' + fmtPct(s.zdp) + '）</b> · 明日关注：高开3%-7%且竞价量比≥5%可模拟介入</div>').join('');
+      return;
+    }
+    const p = AI_STATE.params;
+    body.innerHTML = '<div class="bd-card" style="border-left-color:#60a5fa">🕹️ 生效策略：<b>涨停回踩低吸</b>（回测引擎）<br>' +
+      '参数约束：情绪得分 ≥ ' + p.emoMin + ' 才允许出手 · 起爆前夜最低分 ' + p.boomMinScore + ' · 均线粘合 ≤ ' + p.stickyMax + '% · 量比 ' + p.volMin + '~' + p.volMax + '<br>' +
+      '止盈 +' + p.takeProfit + '% · 止损 -' + p.stopLoss + '% · 持有上限 ' + p.holdDays + ' 日</div>' +
+      '<div class="bd-empty">点击「📡 实时仿真」扫描今日涨停池生成明日关注信号。</div>';
+  }
+  function aiRender3(){
+    const body = $('#ai3Body');
+    if (!AI_STATE.trades.length){ body.innerHTML = '<div class="bd-empty">暂无绩效数据，先运行回测</div>'; return; }
+    const perf = aiPerf();
+    const card = (label, val, color) => '<div style="flex:1 1 90px;min-width:84px;background:var(--panel3);border:1px solid var(--border2);border-radius:8px;padding:8px;text-align:center"><div style="font-size:10px;color:var(--muted)">' + label + '</div><div style="font-size:17px;font-weight:800;color:' + color + ';margin-top:2px">' + val + '</div></div>';
+    let html = '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">' +
+      card('模拟交易', perf.n, 'var(--fg)') +
+      card('胜率', perf.winRate.toFixed(1) + '%', perf.winRate >= 50 ? 'var(--red)' : 'var(--green)') +
+      card('盈亏比', perf.profitFactor.toFixed(2), 'var(--gold)') +
+      card('总盈亏', (perf.totalPnl > 0 ? '+' : '') + perf.totalPnl.toFixed(1) + '%', perf.totalPnl >= 0 ? 'var(--red)' : 'var(--green)') +
+      card('最大回撤', perf.mdd.toFixed(1) + '%', 'var(--green)') + '</div>';
+    /* 资金曲线：简单SVG */
+    if (perf.curve.length >= 2){
+      const pts = perf.curve, w = 300, h = 70;
+      const min = Math.min.apply(null, pts.map(x => x.cum)), max = Math.max.apply(null, pts.map(x => x.cum));
+      const rng = (max - min) || 1;
+      const xy = pts.map((x, i) => (i / (pts.length - 1) * w) + ',' + (h - (x.cum - min) / rng * (h - 6) - 3));
+      const last = pts[pts.length - 1];
+      html += '<div style="background:var(--panel3);border:1px solid var(--border2);border-radius:8px;padding:8px"><div style="font-size:10px;color:var(--muted);margin-bottom:4px">累计收益曲线（' + pts.length + ' 笔）· 当前 ' + (last.cum > 0 ? '+' : '') + last.cum.toFixed(1) + '%</div>' +
+        '<svg viewBox="0 0 ' + w + ' ' + h + '" style="width:100%;height:70px;display:block"><polyline points="' + xy.join(' ') + '" fill="none" stroke="' + (last.cum >= 0 ? '#f87171' : '#4ade80') + '" stroke-width="2"/></svg></div>';
+    }
+    body.innerHTML = html;
+  }
+  function aiRender4(evolve){
+    const body = $('#ai4Body');
+    const p = AI_STATE.params;
+    let html = '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">' +
+      '<span class="bd-tag2 gold">起爆最低分 ' + p.boomMinScore + '</span>' +
+      '<span class="bd-tag2 gold">粘合≤' + p.stickyMax + '%</span>' +
+      '<span class="bd-tag2 gold">量比' + p.volMin + '~' + p.volMax + '</span>' +
+      '<span class="bd-tag2 gold">情绪≥' + p.emoMin + '</span>' +
+      '<span class="bd-tag2 green">止盈+' + p.takeProfit + '%</span>' +
+      '<span class="bd-tag2 red">止损-' + p.stopLoss + '%</span></div>';
+    if (!AI_STATE.log.length){
+      html += '<div class="bd-empty">AI 尚未调整参数。运行回测后，AI 会根据最近20笔绩效自动进化（胜率&lt;40%收紧 / &gt;60%放宽 / 亏损缩止损）。</div>';
+    } else {
+      html += AI_STATE.log.slice(0, 8).map(r => {
+        const chg = r.changes.map(c => '<div style="color:#94a3b8">→ ' + esc(c[3]) + '：<b style="color:var(--gold)">' + c[1] + '</b> → <b style="color:#4ade80">' + c[2] + '</b></div>').join('');
+        return '<div class="bd-card" style="border-left-color:#f5c542"><div style="font-weight:700;color:var(--gold)">🤖 ' + esc(r.time) + ' · 近20笔胜率 ' + r.rate + '% · 平均盈亏 ' + r.avg + '%</div>' + chg + '</div>';
+      }).join('');
+    }
+    body.innerHTML = html;
+  }
+  function aiRenderAll(evolve){
+    aiRender1(); aiRender2(false); aiRender3(); aiRender4(evolve || null);
+  }
+
+  /* ---------- 绑定 ---------- */
+  $('#aiRunBacktest').addEventListener('click', aiRunBacktest);
+  $('#aiRunLive').addEventListener('click', aiRunLive);
+  $('#aiReset').addEventListener('click', () => {
+    if (!confirm('确定重置 AI 参数与全部交易记录？')) return;
+    AI_STATE.params = { ...AI_DEFAULT_PARAMS };
+    AI_STATE.trades = []; AI_STATE.open = []; AI_STATE.equity = []; AI_STATE.log = [];
+    saveAI();
+    aiRenderAll(null);
+    $('#aiStatus').textContent = '已重置为默认参数';
+  });
+  document.addEventListener('click', function onAiTab(e){
+    const t = e.target.closest && e.target.closest('.tab');
+    if (t && t.dataset.view === 'aiengine') aiRenderAll(null);
+  });
+  aiRenderAll(null);
+})();
 </script>
 </body>
 </html>
